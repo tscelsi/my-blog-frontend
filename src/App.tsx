@@ -22,14 +22,14 @@ function App() {
             dragMomentum={false}
             dragConstraints={constraintsRef}
             className="object-none absolute top-1/2 left-1/3 w-3/5 max-w-200 h-52 rounded-xl z-1"
-            src="/src/assets/sunset.png"
+            src="/sunset.png"
           ></motion.img> */}
             <motion.img
               drag
               dragMomentum={false}
               dragConstraints={constraintsRef}
               className="object-none absolute w-1 max-w-200 h-52 rounded-xl z-10"
-              src="/src/assets/sunrise.png"
+              src="/sunrise.png"
             ></motion.img>
           </motion.div>
         </QueryClientProvider>

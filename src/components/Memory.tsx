@@ -76,7 +76,7 @@ export const Memory = ({
       <div className="flex flex-col gap-2">
         <div className="flex justify-between gap-2">
           {!isEditing ? (
-            <h3 className="font-bold text-ellipsis overflow-hidden text-nowrap bg-[url('/src/assets/sunrise.png')] bg-clip-text text-transparent bg-[center_left_60%]">
+            <h3 className="font-bold text-ellipsis overflow-hidden text-nowrap bg-[url('/sunrise.png')] bg-clip-text text-transparent bg-[center_left_60%]">
               {memory.title}
             </h3>
           ) : (
