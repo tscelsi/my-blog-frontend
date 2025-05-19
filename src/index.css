@@ -1,0 +1,28 @@
+@import "tailwindcss";
+
+@theme {
+  --color-*: initial;
+  --color-bg: #120F14;
+  --color-text: #E6E4D4;
+  --color-link: #527AFF;
+  --color-link-hover: #3A5BFF;
+  --color-link-active: #3A5BFF;
+  --color-link-visited: #3A5BFF;
+  --color-error: #F34747;
+  --color-green: #59B25C;
+}
+
+:root {
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: monospace;
+  scrollbar-width: thin;
+  
+}
+
+#root {
+  height: 100vh;
+  width: 100vw;
+  margin: 0;
+  overflow: hidden;
+}
