@@ -1,4 +1,3 @@
-import "./App.css";
 import { useRef } from "react";
 import Container from "./container";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";

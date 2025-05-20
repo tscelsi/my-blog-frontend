@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import "../App.css";
 import { useRef } from "react";
 import Container from "../container";
 import { motion } from "motion/react";
