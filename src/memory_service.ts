@@ -2,13 +2,14 @@ import { Session } from "@supabase/supabase-js";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axios from "axios";
 import { type Memory as MemoryType } from "./types";
+import { Op } from "quill";
 
 export const useListMemories = () => {
   const query = useQuery<MemoryType[]>({
     queryKey: ["list-memories"],
     queryFn: async () => {
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/public/list-memories`,
+        `${import.meta.env.VITE_BACKEND_URL}/public/list-memories`
       );
       return response.data || [];
     },
@@ -106,6 +107,33 @@ export const useCreateMemoryFromText = () => {
   return mutation;
 };
 
+type CreateMemoryFromRichTextType = {
+  data: { memory_title: string; content: Op[] };
+  session: Session;
+};
+
+export const useCreateMemoryFromRichText = () => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: async (args: CreateMemoryFromRichTextType) => {
+      return await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/memory/from-rich-text`,
+        args.data,
+        {
+          headers: {
+            Authorization: `Bearer ${args.session.access_token}`,
+          },
+        }
+      );
+    },
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["list-memories"] });
+    },
+  });
+  return mutation;
+};
+
 type AddFileFragmentToMemoryType = {
   data: FormData;
   session: Session;
@@ -171,6 +199,60 @@ export const useModifyTextFragment = () => {
     mutationFn: async (args: ModifyTextFragmentType) => {
       return await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/fragment/modify-text`,
+        args.data,
+        {
+          headers: {
+            Authorization: `Bearer ${args.session.access_token}`,
+          },
+        }
+      );
+    },
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["list-memories"] });
+    },
+  });
+  return mutation;
+};
+
+type AddRichTextFragmentToMemoryType = {
+  data: { content: Op[]; memory_id: string };
+  session: Session;
+};
+
+export const useAddRichTextFragmentToMemory = () => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: async (args: AddRichTextFragmentToMemoryType) => {
+      return await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/fragment/add-rich-text`,
+        args.data,
+        {
+          headers: {
+            Authorization: `Bearer ${args.session.access_token}`,
+          },
+        }
+      );
+    },
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["list-memories"] });
+    },
+  });
+  return mutation;
+};
+
+type ModifyRichTextFragmentType = {
+  data: { content: Op[]; memory_id: string; fragment_id: string };
+  session: Session;
+};
+
+export const useModifyRichTextFragment = () => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: async (args: ModifyRichTextFragmentType) => {
+      return await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/fragment/modify-rich-text`,
         args.data,
         {
           headers: {

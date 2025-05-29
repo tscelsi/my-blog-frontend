@@ -1,6 +1,6 @@
 import { Memory } from "./components/Memory";
 import { useListMemories } from "./memory_service";
-import { Toolbar } from "./components/Toolbar";
+import { Toolbar } from "./components/Dialog/MainToolbar";
 import { useEffect, useRef, useState } from "react";
 import { AudioPlayer } from "./components/AudioPlayer";
 import { useAuth } from "./hooks/useAuth";

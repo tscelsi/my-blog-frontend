@@ -1,4 +1,4 @@
-import { Pause16Filled, Play16Filled } from "@fluentui/react-icons";
+import { Pause24Filled, Play24Filled } from "@fluentui/react-icons";
 import { useAudio } from "../hooks/useAudio";
 
 export const AudioPlayer = () => {
@@ -22,12 +22,12 @@ export const AudioPlayer = () => {
         className="pb-0.5"
       >
         {isPlaying ? (
-          <Pause16Filled className="cursor-pointer hover:opacity-80" />
+          <Pause24Filled className="cursor-pointer hover:opacity-80" />
         ) : (
-          <Play16Filled className="cursor-pointer hover:opacity-80" />
+          <Play24Filled className="cursor-pointer hover:opacity-80" />
         )}
       </button>
-      <p className="text-ellipsis overflow-hidden text-nowrap align-bottom">
+      <p className="text-ellipsis text-lg overflow-hidden text-nowrap align-bottom">
         {!currentName ? "play something" : currentName}
       </p>
     </div>

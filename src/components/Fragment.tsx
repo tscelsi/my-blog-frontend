@@ -1,10 +1,12 @@
 import {
   useDeleteMemoryOrFragment,
+  useModifyRichTextFragment,
   useModifyTextFragment,
 } from "../memory_service";
 import type {
   FileFragment,
   Memory as MemoryType,
+  RichTextFragment,
   TextFragment,
 } from "../types";
 import { Play16Filled, Pause16Filled } from "@fluentui/react-icons";
@@ -12,6 +14,10 @@ import { Del, Download } from "../actions";
 import { TextArea } from "./inputs";
 import { useAudio } from "../hooks/useAudio";
 import { useAuth } from "../hooks/useAuth";
+import { RichTextEditor } from "../components/RichTextEditor";
+import { useRef } from "react";
+import Quill, { Op } from "quill";
+import { debounce } from "../utils/debounce";
 
 type FragmentBaseProps = {
   memory: MemoryType;
@@ -24,6 +30,10 @@ type FileFragmentProps = {
 
 type TextFragmentProps = {
   fragment: TextFragment;
+} & FragmentBaseProps;
+
+type RichTextFragmentProps = {
+  fragment: RichTextFragment;
 } & FragmentBaseProps;
 
 export const getFileFragment = (fragment: FileFragment) => {
@@ -204,6 +214,59 @@ export const Text = ({ fragment, isEditing, memory }: TextFragmentProps) => {
             />
           )}
         </div>
+      )}
+    </div>
+  );
+};
+
+export const RichText = ({
+  fragment,
+  memory,
+  isEditing,
+}: RichTextFragmentProps) => {
+  const modifyMutation = useModifyRichTextFragment();
+  const deleteMutation = useDeleteMemoryOrFragment();
+  const { session } = useAuth();
+
+  const onTextChange = (ops: Op[]) => {
+    if (session) {
+      modifyMutation.mutateAsync({
+        data: {
+          content: ops,
+          memory_id: memory.id,
+          fragment_id: fragment.id,
+        },
+        session,
+      });
+    }
+  };
+  const debouncedOnTextChange = debounce(onTextChange, 1000);
+  const ref = useRef<Quill>(null);
+
+  return (
+    <div>
+      <div className="">
+        <RichTextEditor
+          ref={ref}
+          readOnly={!isEditing}
+          defaultOps={fragment.content}
+          onTextChange={() => {
+            if (ref?.current) {
+              debouncedOnTextChange(ref.current.getContents().ops);
+            }
+          }}
+        ></RichTextEditor>
+      </div>
+      {session && isEditing && (
+        <Del
+          onClick={() => {
+            deleteMutation.mutateAsync({
+              memory_id: memory.id,
+              fragment_ids: [fragment.id],
+              session,
+            });
+          }}
+        />
       )}
     </div>
   );

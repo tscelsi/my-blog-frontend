@@ -3,8 +3,8 @@ import { type Memory as MemoryType } from "../types";
 import { motion, Reorder } from "motion/react";
 import { Del } from "../actions";
 import { useDeleteMemoryOrFragment, useUpdateMemory } from "../memory_service";
-import { Toolbar } from "./Toolbar";
-import { Audio, Text, Image, File } from "./Fragment";
+import { Toolbar } from "./Dialog/MainToolbar";
+import { Audio, Text, Image, File, RichText } from "./Fragment";
 import { Input } from "./inputs";
 import { formatDate } from "../utils/date_stuff";
 import { useAuth } from "../hooks/useAuth";
@@ -115,53 +115,66 @@ export const Memory = ({
             </div>
           </div>
         </div>
-        <p>{formatDate(memory.created_at)}</p>
       </div>
       {isOpen && (
-        <Reorder.Group
-          className="flex flex-col gap-4"
-          axis="y"
-          values={fragments}
-          onReorder={setFragments}
-        >
-          {fragments.map((item) => (
-            <Reorder.Item key={item.id} value={item} drag={isEditing}>
-              {item.type === "text" ? (
-                <Text
-                  key={item.id}
-                  memory={memory}
-                  fragment={item}
-                  isEditing={isEditing}
-                />
-              ) : item.type === "audio" ? (
-                <Audio
-                  key={item.id}
-                  memory={memory}
-                  fragment={item}
-                  isEditing={isEditing}
-                />
-              ) : item.type === "image" ? (
-                <Image
-                  key={item.id}
-                  memory={memory}
-                  fragment={item}
-                  isEditing={isEditing}
-                />
-              ) : item.type === "file" ? (
-                <File
-                  key={item.id}
-                  memory={memory}
-                  fragment={item}
-                  isEditing={isEditing}
-                />
-              ) : (
-                <p>unknown frag.</p>
-              )}
-            </Reorder.Item>
-          ))}
-        </Reorder.Group>
+        <>
+          <p>{formatDate(memory.created_at)}</p>
+          <Reorder.Group
+            className="flex flex-col gap-4"
+            axis="y"
+            values={fragments}
+            onReorder={setFragments}
+          >
+            {fragments.map((item) => (
+              <Reorder.Item key={item.id} value={item} drag={isEditing}>
+                {item.type === "text" ? (
+                  <Text
+                    key={item.id}
+                    memory={memory}
+                    fragment={item}
+                    isEditing={isEditing}
+                  />
+                ) : item.type === "audio" ? (
+                  <Audio
+                    key={item.id}
+                    memory={memory}
+                    fragment={item}
+                    isEditing={isEditing}
+                  />
+                ) : item.type === "image" ? (
+                  <Image
+                    key={item.id}
+                    memory={memory}
+                    fragment={item}
+                    isEditing={isEditing}
+                  />
+                ) : item.type === "file" ? (
+                  <File
+                    key={item.id}
+                    memory={memory}
+                    fragment={item}
+                    isEditing={isEditing}
+                  />
+                ) : item.type === "rich_text" ? (
+                  <RichText
+                    key={item.id}
+                    fragment={item}
+                    memory={memory}
+                    isEditing={isEditing}
+                  />
+                ) : (
+                  <p>unknown frag.</p>
+                )}
+              </Reorder.Item>
+            ))}
+          </Reorder.Group>
+        </>
       )}
-      {isEditing && <Toolbar memory_id={memory.id} />}
+      {isEditing && (
+        <div className="flex justify-center items-center">
+          <Toolbar memory={memory} />
+        </div>
+      )}
     </motion.div>
   );
 };
