@@ -1,5 +1,12 @@
 import Quill, { Delta, Op } from "quill";
-import { forwardRef, useEffect, useLayoutEffect, useRef } from "react";
+import {
+  ForwardedRef,
+  forwardRef,
+  RefObject,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+} from "react";
 import "./rte.css";
 
 type EditorType = {
@@ -9,21 +16,35 @@ type EditorType = {
 };
 
 export const RichTextEditor = forwardRef(
-  ({ readOnly, defaultOps, onTextChange }: EditorType, ref) => {
-    const containerRef = useRef(null);
+  (
+    { readOnly, defaultOps, onTextChange }: EditorType,
+    ref: ForwardedRef<Quill | null>
+  ) => {
+    const containerRef = useRef<HTMLDivElement>(null);
     const defaultOpsRef = useRef(defaultOps);
     const onTextChangeRef = useRef(onTextChange);
+
+    function setRef<T>(ref: ForwardedRef<T>, value: T) {
+      if (typeof ref === "function") {
+        ref(value);
+      } else if (ref && "current" in ref) {
+        (ref as RefObject<T>).current = value;
+      }
+    }
 
     useLayoutEffect(() => {
       onTextChangeRef.current = onTextChange;
     });
 
     useEffect(() => {
-      ref.current?.enable(!readOnly);
+      if (ref && "current" in ref && ref.current) {
+        ref.current?.enable(!readOnly);
+      }
     }, [ref, readOnly]);
 
     useEffect(() => {
       const container = containerRef.current;
+      if (!container) return;
       const editorContainer = container.appendChild(
         container.ownerDocument.createElement("div")
       );
@@ -31,7 +52,7 @@ export const RichTextEditor = forwardRef(
         placeholder: "Type something...",
       });
 
-      ref.current = quill;
+      setRef(ref, quill);
 
       if (defaultOpsRef.current) {
         const delta = new Delta(defaultOpsRef.current);
@@ -43,7 +64,7 @@ export const RichTextEditor = forwardRef(
       });
 
       return () => {
-        ref.current = null;
+        setRef(ref, null);
         container.innerHTML = "";
       };
     }, [ref]);
