@@ -1,5 +1,5 @@
 import { Memory } from "../../types";
-import { FileDialog, TextDialog } from "./dialogs";
+import { FileDialog, TextDialog } from "../dialogs";
 import {
   TextT24Filled,
   Image24Filled,

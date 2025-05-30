@@ -15,10 +15,10 @@ import { TextArea } from "./inputs";
 import { useAudio } from "../hooks/useAudio";
 import { useAuth } from "../hooks/useAuth";
 import { RichTextEditor } from "../components/RichTextEditor";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import Quill, { Op } from "quill";
 import { debounce } from "../utils/debounce";
-import { TextDialog } from "./Dialog/dialogs";
+import { TextDialog } from "./dialogs";
 
 type FragmentBaseProps = {
   memory: MemoryType;
@@ -225,6 +225,13 @@ export const RichText = ({
   memory,
   isEditing,
 }: RichTextFragmentProps) => {
+  const [defaultContent, setDefaultContent] = useState<Op[]>(
+    fragment.content || []
+  );
+
+  useEffect(() => {
+    setDefaultContent(fragment.content || []);
+  }, [fragment.content]);
   const modifyMutation = useModifyRichTextFragment();
   const deleteMutation = useDeleteMemoryOrFragment();
   const { session } = useAuth();
@@ -245,21 +252,19 @@ export const RichText = ({
   const ref = useRef<Quill>(null);
 
   return (
-    <div>
-      <div className="">
-        <RichTextEditor
-          ref={ref}
-          readOnly={!isEditing}
-          defaultOps={fragment.content}
-          onTextChange={() => {
-            if (ref?.current) {
-              debouncedOnTextChange(ref.current.getContents().ops);
-            }
-          }}
-        ></RichTextEditor>
-      </div>
+    <div className="flex flex-col gap-3">
+      <RichTextEditor
+        ref={ref}
+        readOnly={true}
+        defaultOps={defaultContent}
+        onTextChange={() => {
+          if (ref?.current) {
+            debouncedOnTextChange(ref.current.getContents().ops);
+          }
+        }}
+      ></RichTextEditor>
       {session && isEditing && (
-        <>
+        <div className="flex items-center gap-4">
           <TextDialog
             memory_id={memory.id}
             fragment={fragment}
@@ -274,7 +279,7 @@ export const RichText = ({
               });
             }}
           />
-        </>
+        </div>
       )}
     </div>
   );

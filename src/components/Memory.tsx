@@ -3,7 +3,7 @@ import { type Memory as MemoryType } from "../types";
 import { motion, Reorder } from "motion/react";
 import { Del } from "../actions";
 import { useDeleteMemoryOrFragment, useUpdateMemory } from "../memory_service";
-import { Toolbar } from "./Dialog/MainToolbar";
+import { Toolbar } from "./Toolbar/MainToolbar";
 import { Audio, Text, Image, File, RichText } from "./Fragment";
 import { Input } from "./inputs";
 import { formatDate } from "../utils/date_stuff";

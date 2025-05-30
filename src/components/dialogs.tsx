@@ -1,6 +1,5 @@
 import { VisuallyHidden, Dialog } from "radix-ui";
-import { DialogToolbar } from "./Toolbar";
-import { MediaType, RichTextFragment } from "../../types";
+import { MediaType, RichTextFragment } from "../types";
 import { JSX, useCallback, useRef, useState } from "react";
 import Quill from "quill";
 import {
@@ -9,10 +8,10 @@ import {
   useCreateMemoryFromFile,
   useCreateMemoryFromRichText,
   useModifyRichTextFragment,
-} from "../../memory_service";
-import { RichTextEditor } from "../RichTextEditor";
-import { useAuth } from "../../hooks/useAuth";
-import { ToolbarLayout } from "./ToolbarLayout";
+} from "../memory_service";
+import { RichTextEditor, RichTextEditorToolbar } from "./RichTextEditor";
+import { useAuth } from "../hooks/useAuth";
+import { ToolbarLayout } from "./Toolbar/ToolbarLayout";
 import {
   ArrowEnterLeft24Filled,
   Checkmark24Filled,
@@ -57,18 +56,15 @@ export const TextDialog = ({
     if (memory_id && fragment) {
       // modifying an existing fragment
       console.log("Modifying existing fragment", fragment.id);
-      modifyRichTextFragment
-        .mutateAsync({
-          data: {
-            content: ops || [],
-            memory_id,
-            fragment_id: fragment.id,
-          },
-          session,
-        })
-        .then(() => {
-          setIsOpen(false);
-        });
+      modifyRichTextFragment.mutate({
+        data: {
+          content: ops || [],
+          memory_id,
+          fragment_id: fragment.id,
+        },
+        session,
+      });
+      setIsOpen(false);
     } else if (memory_id) {
       // adding to a memory
       addRichTextToMemory
@@ -114,7 +110,18 @@ export const TextDialog = ({
           </VisuallyHidden.Root>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col items-center justify-center gap-4 w-full">
-              <DialogToolbar type={"rich_text"} quill={quillInstance} />
+              <ToolbarLayout>
+                <Dialog.Close>
+                  <ArrowEnterLeft24Filled className="cursor-pointer hover:opacity-80" />
+                </Dialog.Close>
+                <RichTextEditorToolbar quill={quillInstance} />
+                <button
+                  type="submit"
+                  className="cursor-pointer hover:opacity-80"
+                >
+                  <Checkmark24Filled className="text-green" />
+                </button>
+              </ToolbarLayout>
               <div className="border p-2 bg-bg rounded-lg w-4xl h-[240px] max-h-[240px] overflow-y-auto">
                 <RichTextEditor
                   ref={handleRichTextRef}

@@ -9,7 +9,7 @@ import {
   useRef,
   useState,
 } from "react";
-import "./rte.css";
+import "../styles/rte.css";
 import {
   ArrowEnterLeft24Filled,
   TextBold24Filled,
@@ -130,8 +130,14 @@ export const RichTextEditor = forwardRef(
     ref: ForwardedRef<Quill | null>
   ) => {
     const containerRef = useRef<HTMLDivElement>(null);
-    const defaultOpsRef = useRef(defaultOps);
     const onTextChangeRef = useRef(onTextChange);
+
+    useEffect(() => {
+      if (ref && "current" in ref && ref.current) {
+        const delta = new Delta(defaultOps || []);
+        ref.current.setContents(delta);
+      }
+    }, [defaultOps]);
 
     function setRef<T>(ref: ForwardedRef<T>, value: T) {
       if (typeof ref === "function") {
@@ -166,15 +172,16 @@ export const RichTextEditor = forwardRef(
       });
       quill.enable(!readOnly);
       setRef(ref, quill);
-
-      if (defaultOpsRef.current) {
-        const delta = new Delta(defaultOpsRef.current);
-        quill.setContents(delta);
-      }
+      const delta = new Delta(defaultOps || []);
+      quill.setContents(delta);
       quill.getFormat;
       quill.on(Quill.events.TEXT_CHANGE, (...args) => {
         onTextChangeRef.current?.(...args);
       });
+      if (!readOnly) {
+        quill.focus();
+        quill.setSelection(quill.getLength() - 1, 0);
+      }
 
       return () => {
         setRef(ref, null);
