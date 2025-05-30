@@ -67,6 +67,10 @@ export const Memory = ({
       drag={!isEditing}
       dragMomentum={false}
       dragConstraints={containerRef}
+      onTouchMove={(e) => {
+        // Only prevent default if not editing (i.e., when drag is enabled)
+        if (!isEditing) e.preventDefault();
+      }}
       className="absolute border p-4 min-w-xs w-max rounded-md flex flex-col gap-4 max-w-md z-2 max-h-[80vh] overflow-y-auto hover:cursor-grab active:cursor-grabbing"
       style={{
         top: position.top,
