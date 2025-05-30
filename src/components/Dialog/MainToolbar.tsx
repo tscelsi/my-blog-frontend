@@ -6,6 +6,7 @@ import {
   MusicNote224Filled,
   Document24Filled,
 } from "@fluentui/react-icons";
+import { ToolbarLayout } from "./ToolbarLayout";
 
 type ToolbarProps = {
   memory?: Memory;
@@ -14,7 +15,7 @@ type ToolbarProps = {
 export const Toolbar = ({ memory }: ToolbarProps) => {
   const memoryId = memory?.id || null;
   return (
-    <div className="border-2 p-2 rounded-md flex gap-4 items-center bg-bg">
+    <ToolbarLayout>
       <InputDialog
         type="rich_text"
         memory_id={memoryId}
@@ -39,6 +40,6 @@ export const Toolbar = ({ memory }: ToolbarProps) => {
           <Document24Filled className="cursor-pointer hover:opacity-80" />
         }
       />
-    </div>
+    </ToolbarLayout>
   );
 };

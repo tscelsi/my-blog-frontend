@@ -8,3 +8,13 @@
     width: 100%;
     height: 100%;
 }
+
+.ql-editor a {
+    color: var(--color-link);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.ql-editor a:hover {
+    color: var(--color-link-hover);
+}

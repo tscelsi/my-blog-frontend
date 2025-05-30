@@ -33,7 +33,7 @@ export default function Container() {
   return (
     <div className="w-full h-screen z-10" ref={ref}>
       <div className="flex justify-center items-center pt-4">
-        <div className="fit-content flex flex-col items-start w-[132px]">
+        <div className="fit-content flex flex-col gap-1 items-start w-[132px]">
           {session && <Toolbar />}
           <AudioPlayer />
         </div>

@@ -48,10 +48,8 @@ export const RichTextEditor = forwardRef(
       const editorContainer = container.appendChild(
         container.ownerDocument.createElement("div")
       );
-      const quill = new Quill(editorContainer, {
-        placeholder: "Type something...",
-      });
-
+      const quill = new Quill(editorContainer, {});
+      quill.enable(!readOnly);
       setRef(ref, quill);
 
       if (defaultOpsRef.current) {
@@ -69,6 +67,12 @@ export const RichTextEditor = forwardRef(
       };
     }, [ref]);
 
-    return <div className="w-full h-full" ref={containerRef}></div>;
+    return (
+      <div
+        spellCheck={false}
+        className="w-full h-full"
+        ref={containerRef}
+      ></div>
+    );
   }
 );

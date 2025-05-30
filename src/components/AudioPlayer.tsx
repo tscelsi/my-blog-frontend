@@ -19,7 +19,6 @@ export const AudioPlayer = () => {
         type="button"
         onClick={handlePlayPause}
         aria-label={isPlaying ? "Pause audio" : "Play audio"}
-        className="pb-0.5"
       >
         {isPlaying ? (
           <Pause24Filled className="cursor-pointer hover:opacity-80" />

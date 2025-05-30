@@ -240,7 +240,7 @@ export const RichText = ({
       });
     }
   };
-  const debouncedOnTextChange = debounce(onTextChange, 1000);
+  const debouncedOnTextChange = debounce(onTextChange, 2000);
   const ref = useRef<Quill>(null);
 
   return (

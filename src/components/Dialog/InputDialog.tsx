@@ -21,6 +21,8 @@ type DialogProps = {
 
 const InputDialog = ({ type, memory_id, button }: DialogProps) => {
   const richTextRef = useRef<Quill>(null);
+  const [quillInstance, setQuillInstance] = useState<Quill | null>(null);
+
   const { session } = useAuth();
   const addFileToMemory = useAddFileFragmentToMemory();
   const addRichTextToMemory = useAddRichTextFragmentToMemory();
@@ -102,7 +104,6 @@ const InputDialog = ({ type, memory_id, button }: DialogProps) => {
   );
 
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    console.log("Form submitted");
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const file = formData.get("memory-form-file");
@@ -113,22 +114,27 @@ const InputDialog = ({ type, memory_id, button }: DialogProps) => {
     }
   };
 
+  const handleRichTextRef = useCallback((node: Quill | null) => {
+    richTextRef.current = node;
+    setQuillInstance(node);
+  }, []);
+
   return (
     <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
       <Dialog.Trigger asChild>{button}</Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="z-100 bg-bg fixed inset-0 opacity-80" />
-        <Dialog.Content  className="z-100 fixed top-1/2 left-1/2 w-1/2 p-6 rounded-md shadow-lg translate-x-[-50%] translate-y-[-50%]">
+        <Dialog.Content className="z-100 fixed top-1/2 left-1/2 w-1/2 p-6 rounded-md shadow-lg translate-x-[-50%] translate-y-[-50%]">
           <VisuallyHidden>
             <Dialog.Title>Create a memory with a {type}.</Dialog.Title>
           </VisuallyHidden>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col items-center justify-center gap-4 w-full">
-              <DialogToolbar />
+              <DialogToolbar type={type} quill={quillInstance} />
               {type === "rich_text" ? (
                 <div className="border p-2 bg-bg rounded-lg w-4xl h-[240px] max-h-[240px] overflow-y-auto">
                   <RichTextEditor
-                    ref={richTextRef}
+                    ref={handleRichTextRef}
                     readOnly={false}
                     defaultOps={null}
                   />

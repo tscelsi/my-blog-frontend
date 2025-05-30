@@ -16,20 +16,6 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <motion.div className="relative w-full h-full" ref={constraintsRef}>
             <Container />
-            {/* <motion.img
-            drag
-            dragMomentum={false}
-            dragConstraints={constraintsRef}
-            className="object-none absolute top-1/2 left-1/3 w-3/5 max-w-200 h-52 rounded-xl z-1"
-            src="/sunset.png"
-          ></motion.img> */}
-            <motion.img
-              drag
-              dragMomentum={false}
-              dragConstraints={constraintsRef}
-              className="object-none absolute w-1 max-w-200 h-52 rounded-xl z-10"
-              src="/sunrise.png"
-            ></motion.img>
           </motion.div>
         </QueryClientProvider>
       </AudioProvider>
