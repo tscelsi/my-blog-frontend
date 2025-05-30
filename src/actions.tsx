@@ -5,7 +5,7 @@ type DelProps = {
 export const Del = ({ onClick }: DelProps) => {
   return (
     <div
-      className="cursor-pointer text-error hover:opacity-80"
+      className="cursor-pointer text-error hover:opacity-80 w-fit"
       onClick={onClick}
     >
       <p>del</p>

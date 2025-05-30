@@ -263,6 +263,7 @@ export const useModifyRichTextFragment = () => {
     },
     onSuccess: () => {
       // Invalidate and refetch
+      console.log("Modified rich text fragment successfully");
       queryClient.invalidateQueries({ queryKey: ["list-memories"] });
     },
   });

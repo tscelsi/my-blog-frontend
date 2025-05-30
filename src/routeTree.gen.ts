@@ -12,6 +12,7 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as LoginImport } from './routes/login'
+import { Route as EditorImport } from './routes/editor'
 import { Route as IndexImport } from './routes/index'
 import { Route as AuthConfirmImport } from './routes/auth/confirm'
 
@@ -20,6 +21,12 @@ import { Route as AuthConfirmImport } from './routes/auth/confirm'
 const LoginRoute = LoginImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const EditorRoute = EditorImport.update({
+  id: '/editor',
+  path: '/editor',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -46,6 +53,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexImport
       parentRoute: typeof rootRoute
     }
+    '/editor': {
+      id: '/editor'
+      path: '/editor'
+      fullPath: '/editor'
+      preLoaderRoute: typeof EditorImport
+      parentRoute: typeof rootRoute
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -67,12 +81,14 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/editor': typeof EditorRoute
   '/login': typeof LoginRoute
   '/auth/confirm': typeof AuthConfirmRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/editor': typeof EditorRoute
   '/login': typeof LoginRoute
   '/auth/confirm': typeof AuthConfirmRoute
 }
@@ -80,27 +96,30 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexRoute
+  '/editor': typeof EditorRoute
   '/login': typeof LoginRoute
   '/auth/confirm': typeof AuthConfirmRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/auth/confirm'
+  fullPaths: '/' | '/editor' | '/login' | '/auth/confirm'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/auth/confirm'
-  id: '__root__' | '/' | '/login' | '/auth/confirm'
+  to: '/' | '/editor' | '/login' | '/auth/confirm'
+  id: '__root__' | '/' | '/editor' | '/login' | '/auth/confirm'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  EditorRoute: typeof EditorRoute
   LoginRoute: typeof LoginRoute
   AuthConfirmRoute: typeof AuthConfirmRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  EditorRoute: EditorRoute,
   LoginRoute: LoginRoute,
   AuthConfirmRoute: AuthConfirmRoute,
 }
@@ -116,12 +135,16 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/editor",
         "/login",
         "/auth/confirm"
       ]
     },
     "/": {
       "filePath": "index.tsx"
+    },
+    "/editor": {
+      "filePath": "editor.tsx"
     },
     "/login": {
       "filePath": "login.tsx"

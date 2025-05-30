@@ -18,6 +18,7 @@ import { RichTextEditor } from "../components/RichTextEditor";
 import { useRef } from "react";
 import Quill, { Op } from "quill";
 import { debounce } from "../utils/debounce";
+import { TextDialog } from "./Dialog/dialogs";
 
 type FragmentBaseProps = {
   memory: MemoryType;
@@ -258,15 +259,22 @@ export const RichText = ({
         ></RichTextEditor>
       </div>
       {session && isEditing && (
-        <Del
-          onClick={() => {
-            deleteMutation.mutateAsync({
-              memory_id: memory.id,
-              fragment_ids: [fragment.id],
-              session,
-            });
-          }}
-        />
+        <>
+          <TextDialog
+            memory_id={memory.id}
+            fragment={fragment}
+            button={<p className="cursor-pointer hover:opacity-80">edit</p>}
+          />
+          <Del
+            onClick={() => {
+              deleteMutation.mutateAsync({
+                memory_id: memory.id,
+                fragment_ids: [fragment.id],
+                session,
+              });
+            }}
+          />
+        </>
       )}
     </div>
   );
