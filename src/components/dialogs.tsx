@@ -104,7 +104,7 @@ export const TextDialog = ({
       <Dialog.Trigger asChild>{button}</Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="z-100 bg-bg fixed inset-0 opacity-80" />
-        <Dialog.Content className="z-100 fixed top-1/2 left-1/2 w-[90vw] md:w-3/5 rounded-md shadow-lg translate-x-[-50%] translate-y-[-50%]">
+        <Dialog.Content className="z-100 fixed top-1/2 left-1/2 w-[90vw] md:w-4/5 rounded-md shadow-lg translate-x-[-50%] translate-y-[-50%]">
           <VisuallyHidden.Root>
             <Dialog.Title>Modify a memory with rich text.</Dialog.Title>
           </VisuallyHidden.Root>
@@ -122,7 +122,7 @@ export const TextDialog = ({
                   <Checkmark24Filled className="text-green" />
                 </button>
               </ToolbarLayout>
-              <div className="border p-2 bg-bg rounded-lg h-[240px] max-h-[240px] overflow-y-auto">
+              <div className="border p-2 bg-bg rounded-lg h-[240px] w-[90vw] md:w-4/5  max-h-[240px] overflow-y-auto">
                 <RichTextEditor
                   ref={handleRichTextRef}
                   readOnly={false}
