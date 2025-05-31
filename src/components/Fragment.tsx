@@ -1,6 +1,5 @@
 import {
   useDeleteMemoryOrFragment,
-  useModifyRichTextFragment,
   useModifyTextFragment,
 } from "../memory_service";
 import type {
@@ -15,9 +14,8 @@ import { TextArea } from "./inputs";
 import { useAudio } from "../hooks/useAudio";
 import { useAuth } from "../hooks/useAuth";
 import { RichTextEditor } from "../components/RichTextEditor";
-import { useEffect, useRef, useState } from "react";
-import Quill, { Op } from "quill";
-import { debounce } from "../utils/debounce";
+import { useEffect, useState } from "react";
+import { Op } from "quill";
 import { TextDialog } from "./dialogs";
 
 type FragmentBaseProps = {
@@ -232,22 +230,8 @@ export const RichText = ({
   useEffect(() => {
     setDefaultContent(fragment.content || []);
   }, [fragment.content]);
-  const modifyMutation = useModifyRichTextFragment();
   const deleteMutation = useDeleteMemoryOrFragment();
   const { session } = useAuth();
-
-  const onTextChange = (ops: Op[]) => {
-    if (session) {
-      modifyMutation.mutateAsync({
-        data: {
-          content: ops,
-          memory_id: memory.id,
-          fragment_id: fragment.id,
-        },
-        session,
-      });
-    }
-  };
 
   return (
     <div className="flex flex-col gap-3">
