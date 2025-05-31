@@ -1,10 +1,10 @@
 import { Memory } from "../../types";
 import { FileDialog, TextDialog } from "../dialogs";
 import {
-  TextT24Filled,
-  Image24Filled,
-  MusicNote224Filled,
-  Document24Filled,
+  TextT20Filled,
+  Image20Filled,
+  MusicNote220Filled,
+  Document20Filled,
 } from "@fluentui/react-icons";
 import { ToolbarLayout } from "./ToolbarLayout";
 
@@ -18,25 +18,25 @@ export const Toolbar = ({ memory }: ToolbarProps) => {
     <ToolbarLayout>
       <TextDialog
         memory_id={memoryId}
-        button={<TextT24Filled className="cursor-pointer hover:opacity-80" />}
+        button={<TextT20Filled className="cursor-pointer hover:opacity-80" />}
       />
       <FileDialog
         type="image"
         memory_id={memoryId}
-        button={<Image24Filled className="cursor-pointer hover:opacity-80" />}
+        button={<Image20Filled className="cursor-pointer hover:opacity-80" />}
       />
       <FileDialog
         type="audio"
         memory_id={memoryId}
         button={
-          <MusicNote224Filled className="cursor-pointer hover:opacity-80" />
+          <MusicNote220Filled className="cursor-pointer hover:opacity-80" />
         }
       />
       <FileDialog
         type="file"
         memory_id={memoryId}
         button={
-          <Document24Filled className="cursor-pointer hover:opacity-80" />
+          <Document20Filled className="cursor-pointer hover:opacity-80" />
         }
       />
     </ToolbarLayout>

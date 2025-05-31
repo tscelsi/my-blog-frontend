@@ -145,7 +145,7 @@ export const Image = ({ memory, fragment, isEditing }: FileFragmentProps) => {
   const deleteMutation = useDeleteMemoryOrFragment();
   const { session } = useAuth();
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3 max-w-xl">
       <img
         className="object-contain rounded-sm"
         src={imageUrl}

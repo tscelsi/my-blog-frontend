@@ -103,7 +103,7 @@ export const TextDialog = ({
     <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
       <Dialog.Trigger asChild>{button}</Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="z-100 bg-bg fixed inset-0 opacity-80" />
+        <Dialog.Overlay className="z-100 bg-bg fixed inset-0 opacity-90" />
         <Dialog.Content className="z-100 fixed top-1/2 left-1/2 w-[90vw] md:w-4/5 rounded-md shadow-lg translate-x-[-50%] translate-y-[-50%]">
           <VisuallyHidden.Root>
             <Dialog.Title>Modify a memory with rich text.</Dialog.Title>
@@ -184,7 +184,7 @@ export const FileDialog = ({ type, memory_id, button }: FileDialogProps) => {
     <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
       <Dialog.Trigger asChild>{button}</Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="z-100 bg-bg fixed inset-0 opacity-80" />
+        <Dialog.Overlay className="z-100 bg-bg fixed inset-0 opacity-90" />
         <Dialog.Content className="z-100 fixed top-1/2 left-1/2 w-1/2 p-6 rounded-md shadow-lg translate-x-[-50%] translate-y-[-50%]">
           <VisuallyHidden.Root>
             <Dialog.Title>Create a memory with a {type}.</Dialog.Title>

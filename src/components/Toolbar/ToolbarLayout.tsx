@@ -6,7 +6,7 @@ export const ToolbarLayout = forwardRef<
 >(({ children }, ref) => {
   return (
     <div
-      className="w-fit rounded-md bg-bg p-2 flex items-center gap-4 border-2"
+      className="w-fit bg-bg py-2 flex justify-start items-center gap-2"
       ref={ref}
     >
       {children}

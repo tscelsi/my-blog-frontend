@@ -9,3 +9,7 @@ export const formatDate = (date: string) => {
   };
   return d.toLocaleString("en-US", options);
 };
+
+export const getCurrentYear = () => {
+  return new Date().getFullYear();
+};

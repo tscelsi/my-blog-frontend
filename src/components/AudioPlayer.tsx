@@ -1,4 +1,4 @@
-import { Pause24Filled, Play24Filled } from "@fluentui/react-icons";
+import { Pause20Filled, Play20Filled } from "@fluentui/react-icons";
 import { useAudio } from "../hooks/useAudio";
 
 export const AudioPlayer = () => {
@@ -14,21 +14,25 @@ export const AudioPlayer = () => {
   };
 
   return (
-    <div className="pt-4 gap-3 flex items-end max-w-[126px]">
+    <div className="gap-3 flex items-end min-w-[126px] max-w-[126px]">
       <button
         type="button"
         onClick={handlePlayPause}
         aria-label={isPlaying ? "Pause audio" : "Play audio"}
       >
         {isPlaying ? (
-          <Pause24Filled className="cursor-pointer hover:opacity-80" />
+          <Pause20Filled className="cursor-pointer hover:opacity-80" />
         ) : (
-          <Play24Filled className="cursor-pointer hover:opacity-80" />
+          <Play20Filled className="cursor-pointer hover:opacity-80" />
         )}
       </button>
-      <p className="text-ellipsis text-lg overflow-hidden text-nowrap align-bottom">
-        {!currentName ? "play something" : currentName}
-      </p>
+      {!currentName ? (
+        <p className="opacity-40">{"<blank>"}</p>
+      ) : (
+        <p className="text-ellipsis overflow-hidden text-nowrap align-bottom">
+          {currentName}
+        </p>
+      )}
     </div>
   );
 };

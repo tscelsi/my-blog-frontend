@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { type Memory as MemoryType } from "../types";
-import { motion, Reorder } from "motion/react";
+import { Reorder } from "motion/react";
 import { Del } from "../actions";
 import { useDeleteMemoryOrFragment, useUpdateMemory } from "../memory_service";
 import { Toolbar } from "./Toolbar/MainToolbar";
@@ -9,16 +9,7 @@ import { Input } from "./inputs";
 import { formatDate } from "../utils/date_stuff";
 import { useAuth } from "../hooks/useAuth";
 
-export const Memory = ({
-  memory,
-  containerRef,
-  position,
-}: {
-  memory: MemoryType;
-  containerRef: React.RefObject<HTMLDivElement | null>;
-  position: { top: number; left: number };
-}) => {
-  const [isOpen, setIsOpen] = useState(false);
+export const Memory2 = ({ memory }: { memory: MemoryType }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [fragments, setFragments] = useState(memory.fragments);
   const [updatedMemoryTitle, setUpdatedMemoryTitle] = useState(memory.title);
@@ -31,17 +22,7 @@ export const Memory = ({
     setUpdatedMemoryTitle(memory.title);
   }, [memory]);
 
-  const toggleOpen = () => {
-    if (isOpen && isEditing) {
-      setIsEditing(false);
-    }
-    setIsOpen(!isOpen);
-  };
-
   const toggleEdit = () => {
-    if (!isOpen && !isEditing) {
-      setIsOpen(true);
-    }
     if (isEditing && session) {
       if (
         memory.fragments.map((f) => f.id).join(",") !==
@@ -63,66 +44,47 @@ export const Memory = ({
   };
 
   return (
-    <motion.div
-      drag={!isEditing}
-      dragMomentum={false}
-      dragConstraints={containerRef}
-      onTouchMove={(e) => {
-        // Only prevent default if not editing (i.e., when drag is enabled)
-        if (!isEditing) e.preventDefault();
-      }}
-      className="absolute border p-4 min-w-xs w-max rounded-md flex flex-col gap-4 max-w-md z-2 max-h-[80vh] overflow-y-auto hover:cursor-grab active:cursor-grabbing"
-      style={{
-        top: position.top,
-        left: position.left,
-      }}
-    >
-      <div className="flex flex-col gap-2">
-        <div className="flex justify-between gap-2">
-          {!isEditing ? (
-            <h3 className="font-bold text-ellipsis overflow-hidden text-nowrap bg-[url('/sunrise.png')] bg-clip-text text-transparent bg-[center_left_60%]">
-              {memory.title}
-            </h3>
-          ) : (
-            <Input
-              defaultValue={memory.title}
-              onChange={(e) => {
-                setUpdatedMemoryTitle(e.target.value);
-              }}
-            />
-          )}
-          <div className="flex gap-4 ">
-            {session && (
-              <p onClick={toggleEdit} className="cursor-pointer">
-                {isEditing ? "done" : "edit"}
-              </p>
-            )}
-            <div>
-              {isOpen && isEditing && session ? (
-                <Del
-                  onClick={async () => {
-                    await deleteMutation.mutateAsync({
-                      memory_id: memory.id,
-                      session: session,
-                    });
+    <div className="flex justify-center">
+      <div className="flex flex-col gap-4 z-2 w-4/5">
+        <div className="flex flex-col gap-2 mb-4">
+          <div className="flex justify-between gap-2">
+            <div className="flex gap-2">
+              {!isEditing ? (
+                <h3 className="text-2xl font-bold text-ellipsis overflow-hidden text-nowrap">
+                  {memory.title}
+                </h3>
+              ) : (
+                <Input
+                  defaultValue={memory.title}
+                  onChange={(e) => {
+                    setUpdatedMemoryTitle(e.target.value);
                   }}
                 />
-              ) : isOpen ? (
-                <p className="cursor-pointer" onClick={toggleOpen}>
-                  close
-                </p>
-              ) : (
-                <p className="cursor-pointer" onClick={toggleOpen}>
-                  open
-                </p>
               )}
             </div>
+            <div className="flex gap-4 ">
+              {session && (
+                <p onClick={toggleEdit} className="cursor-pointer">
+                  {isEditing ? "done" : "edit"}
+                </p>
+              )}
+              <div>
+                {isEditing && session && (
+                  <Del
+                    onClick={async () => {
+                      await deleteMutation.mutateAsync({
+                        memory_id: memory.id,
+                        session: session,
+                      });
+                    }}
+                  />
+                )}
+              </div>
+            </div>
           </div>
+          <h6 className="font-bold">{formatDate(memory.created_at)}</h6>
         </div>
-      </div>
-      {isOpen && (
         <>
-          <p>{formatDate(memory.created_at)}</p>
           <Reorder.Group
             className="flex flex-col gap-4"
             axis="y"
@@ -173,12 +135,12 @@ export const Memory = ({
             ))}
           </Reorder.Group>
         </>
-      )}
-      {isEditing && (
-        <div className="flex justify-center items-center">
-          <Toolbar memory={memory} />
-        </div>
-      )}
-    </motion.div>
+        {isEditing && (
+          <div className="flex justify-center items-center">
+            <Toolbar memory={memory} />
+          </div>
+        )}
+      </div>
+    </div>
   );
 };
