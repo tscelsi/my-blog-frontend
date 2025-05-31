@@ -8,8 +8,10 @@ import { Audio, Text, Image, File, RichText } from "./Fragment";
 import { Input } from "./inputs";
 import { formatDate } from "../utils/date_stuff";
 import { useAuth } from "../hooks/useAuth";
+import { useActiveMemory } from "../hooks/useActiveMemory";
 
-export const Memory2 = ({ memory }: { memory: MemoryType }) => {
+export const Memory = ({ memory }: { memory: MemoryType }) => {
+  const { setActiveMemory } = useActiveMemory();
   const [isEditing, setIsEditing] = useState(false);
   const [fragments, setFragments] = useState(memory.fragments);
   const [updatedMemoryTitle, setUpdatedMemoryTitle] = useState(memory.title);
@@ -51,7 +53,7 @@ export const Memory2 = ({ memory }: { memory: MemoryType }) => {
             <div className="flex gap-2">
               {!isEditing ? (
                 <h3 className="text-2xl font-bold text-ellipsis overflow-hidden text-nowrap">
-                  {memory.title}
+                  {updatedMemoryTitle}
                 </h3>
               ) : (
                 <Input
@@ -72,10 +74,14 @@ export const Memory2 = ({ memory }: { memory: MemoryType }) => {
                 {isEditing && session && (
                   <Del
                     onClick={async () => {
-                      await deleteMutation.mutateAsync({
-                        memory_id: memory.id,
-                        session: session,
-                      });
+                      await deleteMutation
+                        .mutateAsync({
+                          memory_id: memory.id,
+                          session: session,
+                        })
+                        .then(() => {
+                          setActiveMemory(undefined);
+                        });
                     }}
                   />
                 )}

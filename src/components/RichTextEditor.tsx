@@ -11,16 +11,17 @@ import {
 } from "react";
 import "../styles/rte.css";
 import {
-  ArrowEnterLeft24Filled,
-  TextBold24Filled,
-  TextItalic24Filled,
-  Checkmark24Filled,
-  Link24Filled,
+  ArrowEnterLeft20Filled,
+  TextBold20Filled,
+  TextItalic20Filled,
+  Checkmark20Filled,
+  Link20Filled,
 } from "@fluentui/react-icons";
 
 type EditorType = {
   readOnly: boolean;
   defaultOps: Op[] | null;
+  setQuillInstance?: (quill: Quill) => void;
   onTextChange?: (delta: Delta, oldDelta: Delta, source: string) => void;
 };
 
@@ -67,7 +68,7 @@ export const RichTextEditorToolbar = ({ quill }: { quill: Quill | null }) => {
           }
         }}
       >
-        <TextBold24Filled />
+        <TextBold20Filled />
       </button>
       <button
         type="button"
@@ -81,7 +82,7 @@ export const RichTextEditorToolbar = ({ quill }: { quill: Quill | null }) => {
           }
         }}
       >
-        <TextItalic24Filled />
+        <TextItalic20Filled />
       </button>
       <Popover.Root open={linkOpen}>
         <Popover.Anchor asChild>
@@ -91,7 +92,7 @@ export const RichTextEditorToolbar = ({ quill }: { quill: Quill | null }) => {
             className="hover:opacity-80 cursor-pointer"
             aria-label="Insert link"
           >
-            <Link24Filled />
+            <Link20Filled />
           </button>
         </Popover.Anchor>
         <Popover.Content className="bg-bg p-2 rounded-md shadow-lg">
@@ -108,14 +109,14 @@ export const RichTextEditorToolbar = ({ quill }: { quill: Quill | null }) => {
               onClick={() => setLinkOpen(false)}
               className="hover:opacity-80 cursor-pointer"
             >
-              <ArrowEnterLeft24Filled />
+              <ArrowEnterLeft20Filled />
             </button>
             <button
               type="button"
               onClick={handleLinkSubmit}
               className="hover:opacity-80 cursor-pointer"
             >
-              <Checkmark24Filled />
+              <Checkmark20Filled />
             </button>
           </div>
         </Popover.Content>
@@ -126,7 +127,7 @@ export const RichTextEditorToolbar = ({ quill }: { quill: Quill | null }) => {
 
 export const RichTextEditor = forwardRef(
   (
-    { readOnly, defaultOps, onTextChange }: EditorType,
+    { readOnly, defaultOps, onTextChange, setQuillInstance }: EditorType,
     ref: ForwardedRef<Quill | null>
   ) => {
     const containerRef = useRef<HTMLDivElement>(null);
@@ -182,6 +183,7 @@ export const RichTextEditor = forwardRef(
         quill.focus();
         quill.setSelection(quill.getLength() - 1, 0);
       }
+      if (setQuillInstance) setQuillInstance(quill);
 
       return () => {
         setRef(ref, null);

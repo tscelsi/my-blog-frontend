@@ -6,7 +6,6 @@ import {
   MusicNote220Filled,
   Document20Filled,
 } from "@fluentui/react-icons";
-import { ToolbarLayout } from "./ToolbarLayout";
 
 type ToolbarProps = {
   memory?: Memory;
@@ -15,7 +14,7 @@ type ToolbarProps = {
 export const Toolbar = ({ memory }: ToolbarProps) => {
   const memoryId = memory?.id || null;
   return (
-    <ToolbarLayout>
+    <div className="w-fit bg-bg py-2 flex justify-start items-center gap-2">
       <TextDialog
         memory_id={memoryId}
         button={<TextT20Filled className="cursor-pointer hover:opacity-80" />}
@@ -39,6 +38,6 @@ export const Toolbar = ({ memory }: ToolbarProps) => {
           <Document20Filled className="cursor-pointer hover:opacity-80" />
         }
       />
-    </ToolbarLayout>
+    </div>
   );
 };

@@ -7,7 +7,7 @@ export const MemoryList = () => {
   const { setActiveMemory } = useActiveMemory();
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col">
       {query.isLoading && (
         <div className="border-y">
           <p className="opacity-40 mx-6 md:mx-8">{"<blank>"}</p>

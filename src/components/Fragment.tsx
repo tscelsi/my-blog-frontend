@@ -248,20 +248,12 @@ export const RichText = ({
       });
     }
   };
-  const debouncedOnTextChange = debounce(onTextChange, 2000);
-  const ref = useRef<Quill>(null);
 
   return (
     <div className="flex flex-col gap-3">
       <RichTextEditor
-        ref={ref}
         readOnly={true}
         defaultOps={defaultContent}
-        onTextChange={() => {
-          if (ref?.current) {
-            debouncedOnTextChange(ref.current.getContents().ops);
-          }
-        }}
       ></RichTextEditor>
       {session && isEditing && (
         <div className="flex items-center gap-4">

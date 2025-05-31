@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Menubar } from "../components/Toolbar/Menubar";
-import { Memory2 } from "../components/Memory";
+import { Memory } from "../components/Memory";
 import { MemoryList } from "../components/MemoryList";
 import { useActiveMemory } from "../hooks/useActiveMemory";
 import { Footer } from "../components/Footer";
@@ -22,7 +22,7 @@ function RouteComponent() {
         <div className="flex-2 pb-4">
           <Menubar />
           {activeMemory ? (
-            <Memory2 memory={activeMemory} />
+            <Memory memory={activeMemory} />
           ) : (
             <div className="w-full flex items-center justify-center">
               <p className="opacity-40">{"<blank>"}</p>

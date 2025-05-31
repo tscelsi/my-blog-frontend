@@ -1,6 +1,6 @@
 import { VisuallyHidden, Dialog } from "radix-ui";
 import { MediaType, RichTextFragment } from "../types";
-import { JSX, useCallback, useRef, useState } from "react";
+import { JSX, useCallback, useState } from "react";
 import Quill from "quill";
 import {
   useAddFileFragmentToMemory,
@@ -13,8 +13,8 @@ import { RichTextEditor, RichTextEditorToolbar } from "./RichTextEditor";
 import { useAuth } from "../hooks/useAuth";
 import { ToolbarLayout } from "./Toolbar/ToolbarLayout";
 import {
-  ArrowEnterLeft24Filled,
-  Checkmark24Filled,
+  ArrowEnterLeft20Filled,
+  Checkmark20Filled,
 } from "@fluentui/react-icons";
 
 type TextDialogProps = {
@@ -34,7 +34,6 @@ export const TextDialog = ({
   fragment,
   button,
 }: TextDialogProps) => {
-  const richTextRef = useRef<Quill>(null);
   const [quillInstance, setQuillInstance] = useState<Quill | null>(null);
 
   const { session } = useAuth();
@@ -43,61 +42,60 @@ export const TextDialog = ({
   const createMemoryFromRichText = useCreateMemoryFromRichText();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
-  const handleSubmit = useCallback(() => {
-    if (!richTextRef.current) {
-      console.error("Rich text editor not initialized");
-      return;
-    }
-    if (!session) {
-      console.error("No session");
-      return;
-    }
-    const ops = richTextRef.current?.getContents().ops;
-    if (memory_id && fragment) {
-      // modifying an existing fragment
-      console.log("Modifying existing fragment", fragment.id);
-      modifyRichTextFragment.mutate({
-        data: {
-          content: ops || [],
-          memory_id,
-          fragment_id: fragment.id,
-        },
-        session,
-      });
-      setIsOpen(false);
-    } else if (memory_id) {
-      // adding to a memory
-      addRichTextToMemory
-        .mutateAsync({
+  const handleSubmit = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      event.preventDefault();
+      if (!quillInstance) {
+        console.error("Rich text editor not initialized");
+        return;
+      }
+      if (!session) {
+        console.error("No session");
+        return;
+      }
+      const ops = quillInstance.getContents().ops;
+      if (memory_id && fragment) {
+        // modifying an existing fragment
+        console.log("Modifying existing fragment", fragment.id);
+        modifyRichTextFragment.mutate({
           data: {
+            content: ops || [],
             memory_id,
-            content: ops || [],
+            fragment_id: fragment.id,
           },
           session,
-        })
-        .then(() => {
-          setIsOpen(false);
         });
-    } else {
-      // creating new memory
-      createMemoryFromRichText
-        .mutateAsync({
-          data: {
-            memory_title: "blank_",
-            content: ops || [],
-          },
-          session,
-        })
-        .then(() => {
-          setIsOpen(false);
-        });
-    }
-  }, [session, memory_id]);
-
-  const handleRichTextRef = useCallback((node: Quill | null) => {
-    richTextRef.current = node;
-    setQuillInstance(node);
-  }, []);
+        setIsOpen(false);
+      } else if (memory_id) {
+        // adding to a memory
+        addRichTextToMemory
+          .mutateAsync({
+            data: {
+              memory_id,
+              content: ops || [],
+            },
+            session,
+          })
+          .then(() => {
+            setIsOpen(false);
+          });
+      } else {
+        // creating new memory
+        createMemoryFromRichText
+          .mutateAsync({
+            data: {
+              memory_title: "blank_",
+              content: ops || [],
+            },
+            session,
+          })
+          .then(() => {
+            setIsOpen(false);
+          });
+      }
+    },
+    [quillInstance, session, memory_id, fragment]
+  );
 
   return (
     <Dialog.Root open={isOpen} onOpenChange={setIsOpen}>
@@ -112,19 +110,19 @@ export const TextDialog = ({
             <div className="flex flex-col items-center justify-center gap-4">
               <ToolbarLayout>
                 <Dialog.Close>
-                  <ArrowEnterLeft24Filled className="cursor-pointer hover:opacity-80" />
+                  <ArrowEnterLeft20Filled className="cursor-pointer hover:opacity-80" />
                 </Dialog.Close>
                 <RichTextEditorToolbar quill={quillInstance} />
                 <button
                   type="submit"
                   className="cursor-pointer hover:opacity-80"
                 >
-                  <Checkmark24Filled className="text-green" />
+                  <Checkmark20Filled className="text-green" />
                 </button>
               </ToolbarLayout>
-              <div className="border p-2 bg-bg rounded-lg h-[240px] w-[90vw] md:w-4/5  max-h-[240px] overflow-y-auto">
+              <div className="border p-2 bg-bg rounded-lg h-[200px] w-[90vw] md:w-4/5  max-h-[200px] overflow-y-auto">
                 <RichTextEditor
-                  ref={handleRichTextRef}
+                  setQuillInstance={setQuillInstance}
                   readOnly={false}
                   defaultOps={fragment?.content || null}
                 />
@@ -193,13 +191,13 @@ export const FileDialog = ({ type, memory_id, button }: FileDialogProps) => {
             <div className="flex flex-col items-center justify-center gap-4 w-full">
               <ToolbarLayout>
                 <Dialog.Close>
-                  <ArrowEnterLeft24Filled className="cursor-pointer hover:opacity-80" />
+                  <ArrowEnterLeft20Filled className="cursor-pointer hover:opacity-80" />
                 </Dialog.Close>
                 <button
                   type="submit"
                   className="cursor-pointer hover:opacity-80"
                 >
-                  <Checkmark24Filled className="text-green" />
+                  <Checkmark20Filled className="text-green" />
                 </button>
               </ToolbarLayout>
               <input
