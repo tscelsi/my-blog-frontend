@@ -20,7 +20,7 @@ function RouteComponent() {
           <Menubar audioPlayerEnabled addMediaEnabled={session !== null} />
           <MemoryList />
         </div>
-        <div className="border-l"></div>
+        <div className="border-l border-light-grey"></div>
         <div className="flex-2 pb-4">
           <Menubar />
           {activeMemory ? (

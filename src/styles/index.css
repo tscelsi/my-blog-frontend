@@ -10,6 +10,8 @@
   --color-link-visited: #3A5BFF;
   --color-error: #F34747;
   --color-green: #59B25C;
+  --color-dark-grey: #39373A;
+  --color-light-grey: #7D797F;
 }
 
 :root {
@@ -17,7 +19,7 @@
   color: var(--color-text);
   font-family: monospace;
   scrollbar-width: thin;
-  
+
 }
 
 #root {

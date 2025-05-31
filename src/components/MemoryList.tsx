@@ -17,7 +17,7 @@ export const MemoryList = () => {
         query.data.map((memory) => (
           <div
             key={memory.id}
-            className="hover:opacity-80 cursor-pointer border-b first:border-t"
+            className="hover:opacity-80 cursor-pointer border-b border-dark-grey first:border-t"
             onClick={() => setActiveMemory(memory)}
           >
             <p className="mx-6 md:mx-8">
