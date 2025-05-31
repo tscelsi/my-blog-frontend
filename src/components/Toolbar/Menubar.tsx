@@ -12,8 +12,8 @@ export const Menubar = ({
 }: MenubarProps) => {
   return (
     <div className="mx-6 md:mx-8 h-[64px] md:h-[80px] flex gap-2 items-center justify-between">
-      {addMediaEnabled ? <Toolbar /> : <div></div>}
       {audioPlayerEnabled && <AudioPlayer />}
+      {addMediaEnabled && <Toolbar />}
     </div>
   );
 };

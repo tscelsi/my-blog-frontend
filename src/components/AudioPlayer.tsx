@@ -14,7 +14,7 @@ export const AudioPlayer = () => {
   };
 
   return (
-    <div className="gap-3 flex items-end min-w-[126px] max-w-[126px]">
+    <div className="gap-3 flex items-end max-w-xs">
       <button
         type="button"
         onClick={handlePlayPause}

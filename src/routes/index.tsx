@@ -4,6 +4,7 @@ import { Memory } from "../components/Memory";
 import { MemoryList } from "../components/MemoryList";
 import { useActiveMemory } from "../hooks/useActiveMemory";
 import { Footer } from "../components/Footer";
+import { useAuth } from "../hooks/useAuth";
 
 export const Route = createFileRoute("/")({
   component: RouteComponent,
@@ -11,11 +12,12 @@ export const Route = createFileRoute("/")({
 
 function RouteComponent() {
   const { activeMemory } = useActiveMemory();
+  const { session } = useAuth();
   return (
     <div className="h-full w-full flex flex-col">
       <div className="flex flex-1">
         <div className="flex-1">
-          <Menubar audioPlayerEnabled addMediaEnabled />
+          <Menubar audioPlayerEnabled addMediaEnabled={session !== null} />
           <MemoryList />
         </div>
         <div className="border-l"></div>
