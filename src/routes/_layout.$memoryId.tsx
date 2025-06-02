@@ -7,13 +7,13 @@ import { useIsSmallScreen } from "../hooks/useIsSmallScreen";
 import { Footer } from "../components/Footer";
 
 export const Route = createFileRoute("/_layout/$memoryId")({
-  component: DesktopMemory,
+  component: MemoryPage,
   loader: ({ context: { queryClient }, params: { memoryId } }) => {
     return queryClient.ensureQueryData(getMemoryQueryOptions(memoryId));
   },
 });
 
-export function DesktopMemory() {
+export function MemoryPage() {
   const memoryId = Route.useParams().memoryId;
   const { data: memory } = useSuspenseQuery(getMemoryQueryOptions(memoryId));
   const isSmallScreen = useIsSmallScreen();
@@ -22,7 +22,7 @@ export function DesktopMemory() {
     <div className="h-full w-full flex flex-col">
       {/* a blank menu bar to pad */}
       <Menubar audioPlayerEnabled={isSmallScreen} />
-      <div className="flex-1">
+      <div className="flex-1 pb-4">
         <Memory memory={memory} />
       </div>
       {isSmallScreen && <Footer />}

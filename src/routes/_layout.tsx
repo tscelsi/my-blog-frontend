@@ -8,13 +8,13 @@ import { useSuspenseQuery } from "@tanstack/react-query";
 import { useIsSmallScreen } from "../hooks/useIsSmallScreen";
 
 export const Route = createFileRoute("/_layout")({
-  component: DesktopLayout,
+  component: Layout,
   loader: ({ context: { queryClient } }) => {
     return queryClient.ensureQueryData(listMemoriesQueryOptions());
   },
 });
 
-export function DesktopLayout() {
+export function Layout() {
   const { session } = useAuth();
   const isSmallScreen = useIsSmallScreen();
   const { data: memories } = useSuspenseQuery(listMemoriesQueryOptions());

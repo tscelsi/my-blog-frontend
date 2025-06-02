@@ -8,13 +8,13 @@ import { MemoryList } from "../components/MemoryList";
 import { Footer } from "../components/Footer";
 
 export const Route = createFileRoute("/_layout/")({
-  component: RouteComponent,
+  component: HomePage,
   loader: ({ context: { queryClient } }) => {
     return queryClient.ensureQueryData(listMemoriesQueryOptions());
   },
 });
 
-function RouteComponent() {
+function HomePage() {
   const { session } = useAuth();
   const isSmallScreen = useIsSmallScreen();
   const { data: memories } = useSuspenseQuery(listMemoriesQueryOptions());
