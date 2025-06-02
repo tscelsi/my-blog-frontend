@@ -7,7 +7,6 @@ import { listMemoriesQueryOptions } from "../memory_service";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useIsSmallScreen } from "../hooks/useIsSmallScreen";
 import { useRef } from "react";
-import { motion } from "motion/react";
 
 export const Route = createFileRoute("/_layout")({
   component: Layout,
@@ -36,13 +35,13 @@ export function Layout() {
         </div>
       </div>
       <Footer />
-      <motion.img
+      {/* <motion.img
         drag
         dragMomentum={false}
         dragConstraints={constraintsRef}
         className="object-none absolute top-1/2 left-1/2 w-1/5 h-32 rounded-xs z-3"
         src="/sunrise.png"
-      ></motion.img>
+      ></motion.img> */}
     </div>
   );
 }
