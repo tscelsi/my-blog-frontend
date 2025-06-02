@@ -54,8 +54,8 @@ export const Memory = ({ memory }: { memory: MemoryType }) => {
       <div className="flex flex-col gap-4 z-2 w-4/5">
         <div className="flex flex-col gap-2 mb-4">
           {isSmallScreen && (
-            <Link to="/">
-              <ArrowEnterLeft20Filled className="hover:opacity-80 cursor-pointer" />
+            <Link to="/" className="w-fit">
+              <ArrowEnterLeft20Filled />
             </Link>
           )}
           <div className="flex justify-between gap-2">
