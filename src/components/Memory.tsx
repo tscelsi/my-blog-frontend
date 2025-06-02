@@ -8,18 +8,16 @@ import { Audio, Text, Image, File, RichText } from "./Fragment";
 import { Input } from "./inputs";
 import { formatDate } from "../utils/date_stuff";
 import { useAuth } from "../hooks/useAuth";
-import { useActiveMemory } from "../hooks/useActiveMemory";
 import { useIsSmallScreen } from "../hooks/useIsSmallScreen";
 import { ArrowEnterLeft20Filled } from "@fluentui/react-icons";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 
 export const Memory = ({ memory }: { memory: MemoryType }) => {
-  const { setActiveMemory } = useActiveMemory();
   const [isEditing, setIsEditing] = useState(false);
   const [fragments, setFragments] = useState(memory.fragments);
   const [updatedMemoryTitle, setUpdatedMemoryTitle] = useState(memory.title);
   const deleteMutation = useDeleteMemoryOrFragment();
-  const updateOrderingMutation = useUpdateMemory();
+  const updateOrderingMutation = useUpdateMemory(memory.id);
   const isSmallScreen = useIsSmallScreen();
   const { session } = useAuth();
 
@@ -49,6 +47,8 @@ export const Memory = ({ memory }: { memory: MemoryType }) => {
     setIsEditing(!isEditing);
   };
 
+  const navigate = useNavigate();
+
   return (
     <div className="flex justify-center">
       <div className="flex flex-col gap-4 z-2 w-4/5">
@@ -58,7 +58,7 @@ export const Memory = ({ memory }: { memory: MemoryType }) => {
               <ArrowEnterLeft20Filled />
             </Link>
           )}
-          <div className="flex justify-between gap-2">
+          <div className="flex justify-between items-end gap-4">
             <div className="flex gap-2 items-center">
               {!isEditing ? (
                 <h3 className="text-2xl font-bold text-ellipsis overflow-hidden text-nowrap">
@@ -73,9 +73,12 @@ export const Memory = ({ memory }: { memory: MemoryType }) => {
                 />
               )}
             </div>
-            <div className="flex gap-4 ">
+            <div className="flex gap-4">
               {session && (
-                <p onClick={toggleEdit} className="cursor-pointer">
+                <p
+                  onClick={toggleEdit}
+                  className="cursor-pointer hover:opacity-80"
+                >
                   {isEditing ? "done" : "edit"}
                 </p>
               )}
@@ -89,7 +92,7 @@ export const Memory = ({ memory }: { memory: MemoryType }) => {
                           session: session,
                         })
                         .then(() => {
-                          setActiveMemory(undefined);
+                          navigate({ to: "/" });
                         });
                     }}
                   />

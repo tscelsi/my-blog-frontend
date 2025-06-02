@@ -11,7 +11,7 @@ import { Op } from "quill";
 
 export const listMemoriesQueryOptions = () =>
   queryOptions({
-    queryKey: ["list-memories"],
+    queryKey: ["memory"],
     queryFn: async () => {
       const response = await axios.get<MemoryType[]>(
         `${import.meta.env.VITE_BACKEND_URL}/public/memory`
@@ -22,7 +22,7 @@ export const listMemoriesQueryOptions = () =>
 
 export const useListMemories = () => {
   const query = useQuery<MemoryType[]>({
-    queryKey: ["list-memories"],
+    queryKey: ["memory"],
     queryFn: async () => {
       const response = await axios.get(
         `${import.meta.env.VITE_BACKEND_URL}/public/memory`
@@ -37,7 +37,7 @@ export const useListMemories = () => {
 
 export const getMemoryQueryOptions = (memoryId: string) =>
   queryOptions({
-    queryKey: ["get-memory", memoryId],
+    queryKey: ["memory", memoryId],
     queryFn: async () => {
       const response = await axios.get<MemoryType>(
         `${import.meta.env.VITE_BACKEND_URL}/public/memory/${memoryId}`
@@ -74,7 +74,7 @@ export const useDeleteMemoryOrFragment = () => {
     },
     onSuccess: () => {
       // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["list-memories"] });
+      queryClient.invalidateQueries({ queryKey: ["memory"] });
     },
   });
   return mutation;
@@ -101,7 +101,7 @@ export const useCreateMemoryFromFile = () => {
     },
     onSuccess: () => {
       // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["list-memories"] });
+      queryClient.invalidateQueries({ queryKey: ["memory"] });
     },
   });
   return mutation;
@@ -128,7 +128,7 @@ export const useCreateMemoryFromText = () => {
     },
     onSuccess: () => {
       // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["list-memories"] });
+      queryClient.invalidateQueries({ queryKey: ["memory"] });
     },
   });
   return mutation;
@@ -155,7 +155,7 @@ export const useCreateMemoryFromRichText = () => {
     },
     onSuccess: () => {
       // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["list-memories"] });
+      queryClient.invalidateQueries({ queryKey: ["memory"] });
     },
   });
   return mutation;
@@ -182,7 +182,7 @@ export const useAddFileFragmentToMemory = () => {
     },
     onSuccess: () => {
       // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["list-memories"] });
+      queryClient.invalidateQueries({ queryKey: ["memory"] });
     },
   });
   return mutation;
@@ -209,7 +209,7 @@ export const useAddTextFragmentToMemory = () => {
     },
     onSuccess: () => {
       // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["list-memories"] });
+      queryClient.invalidateQueries({ queryKey: ["memory"] });
     },
   });
   return mutation;
@@ -236,7 +236,7 @@ export const useModifyTextFragment = () => {
     },
     onSuccess: () => {
       // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["list-memories"] });
+      queryClient.invalidateQueries({ queryKey: ["memory"] });
     },
   });
   return mutation;
@@ -263,7 +263,7 @@ export const useAddRichTextFragmentToMemory = () => {
     },
     onSuccess: () => {
       // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["list-memories"] });
+      queryClient.invalidateQueries({ queryKey: ["memory"] });
     },
   });
   return mutation;
@@ -291,7 +291,7 @@ export const useModifyRichTextFragment = () => {
     onSuccess: () => {
       // Invalidate and refetch
       console.log("Modified rich text fragment successfully");
-      queryClient.invalidateQueries({ queryKey: ["list-memories"] });
+      queryClient.invalidateQueries({ queryKey: ["memory"] });
     },
   });
   return mutation;
@@ -306,7 +306,7 @@ type UpdateMemoryType = {
   session: Session;
 };
 
-export const useUpdateMemory = () => {
+export const useUpdateMemory = (memory_id: string) => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (options: UpdateMemoryType) => {
@@ -322,7 +322,7 @@ export const useUpdateMemory = () => {
     },
     onSuccess: () => {
       // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["list-memories"] });
+      queryClient.invalidateQueries({ queryKey: ["memory", memory_id] });
     },
   });
   return mutation;

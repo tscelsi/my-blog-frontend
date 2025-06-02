@@ -14,8 +14,8 @@ import { TextArea } from "./inputs";
 import { useAudio } from "../hooks/useAudio";
 import { useAuth } from "../hooks/useAuth";
 import { RichTextEditor } from "../components/RichTextEditor";
-import { useEffect, useState } from "react";
-import { Op } from "quill";
+import { useEffect, useRef, useState } from "react";
+import Quill, { Delta, Op } from "quill";
 import { TextDialog } from "./dialogs";
 
 type FragmentBaseProps = {
@@ -223,12 +223,20 @@ export const RichText = ({
   memory,
   isEditing,
 }: RichTextFragmentProps) => {
+  const quillRef = useRef<Quill>(null);
   const [defaultContent, setDefaultContent] = useState<Op[]>(
     fragment.content || []
   );
 
   useEffect(() => {
     setDefaultContent(fragment.content || []);
+    console.log("new fragment content...");
+    if (quillRef.current) {
+      console.log("setting quill content", fragment.content);
+      quillRef.current.setContents(new Delta(fragment.content || []));
+    } else {
+      console.warn("Quill instance is not set yet");
+    }
   }, [fragment.content]);
   const deleteMutation = useDeleteMemoryOrFragment();
   const { session } = useAuth();
@@ -236,6 +244,7 @@ export const RichText = ({
   return (
     <div className="flex flex-col gap-3">
       <RichTextEditor
+        ref={quillRef}
         readOnly={true}
         defaultOps={defaultContent}
       ></RichTextEditor>
