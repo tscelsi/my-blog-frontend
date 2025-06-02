@@ -1,25 +1,24 @@
 import * as React from "react";
-import { Outlet, createRootRoute } from "@tanstack/react-router";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Outlet, createRootRouteWithContext } from "@tanstack/react-router";
 import { AudioProvider } from "../hooks/useAudio";
 import { AuthProvider } from "../hooks/useAuth";
 import { ActiveMemoryProvider } from "../hooks/useActiveMemory";
+import type { QueryClient } from "@tanstack/react-query";
 
-export const Route = createRootRoute({
+export const Route = createRootRouteWithContext<{
+  queryClient: QueryClient;
+}>()({
   component: RootComponent,
 });
-const queryClient = new QueryClient();
 
 function RootComponent() {
   return (
     <React.Fragment>
       <AuthProvider>
         <AudioProvider>
-          <QueryClientProvider client={queryClient}>
-            <ActiveMemoryProvider>
-              <Outlet />
-            </ActiveMemoryProvider>
-          </QueryClientProvider>
+          <ActiveMemoryProvider>
+            <Outlet />
+          </ActiveMemoryProvider>
         </AudioProvider>
       </AuthProvider>
     </React.Fragment>

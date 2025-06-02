@@ -9,6 +9,9 @@ import { Input } from "./inputs";
 import { formatDate } from "../utils/date_stuff";
 import { useAuth } from "../hooks/useAuth";
 import { useActiveMemory } from "../hooks/useActiveMemory";
+import { useIsSmallScreen } from "../hooks/useIsSmallScreen";
+import { ArrowEnterLeft20Filled } from "@fluentui/react-icons";
+import { Link } from "@tanstack/react-router";
 
 export const Memory = ({ memory }: { memory: MemoryType }) => {
   const { setActiveMemory } = useActiveMemory();
@@ -17,6 +20,7 @@ export const Memory = ({ memory }: { memory: MemoryType }) => {
   const [updatedMemoryTitle, setUpdatedMemoryTitle] = useState(memory.title);
   const deleteMutation = useDeleteMemoryOrFragment();
   const updateOrderingMutation = useUpdateMemory();
+  const isSmallScreen = useIsSmallScreen();
   const { session } = useAuth();
 
   useEffect(() => {
@@ -49,8 +53,13 @@ export const Memory = ({ memory }: { memory: MemoryType }) => {
     <div className="flex justify-center">
       <div className="flex flex-col gap-4 z-2 w-4/5">
         <div className="flex flex-col gap-2 mb-4">
+          {isSmallScreen && (
+            <Link to="/">
+              <ArrowEnterLeft20Filled className="hover:opacity-80 cursor-pointer" />
+            </Link>
+          )}
           <div className="flex justify-between gap-2">
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
               {!isEditing ? (
                 <h3 className="text-2xl font-bold text-ellipsis overflow-hidden text-nowrap">
                   {updatedMemoryTitle}

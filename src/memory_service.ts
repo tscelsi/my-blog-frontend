@@ -1,15 +1,31 @@
 import { Session } from "@supabase/supabase-js";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  queryOptions,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import axios from "axios";
 import { type Memory as MemoryType } from "./types";
 import { Op } from "quill";
+
+export const listMemoriesQueryOptions = () =>
+  queryOptions({
+    queryKey: ["list-memories"],
+    queryFn: async () => {
+      const response = await axios.get<MemoryType[]>(
+        `${import.meta.env.VITE_BACKEND_URL}/public/memory`
+      );
+      return response.data || [];
+    },
+  });
 
 export const useListMemories = () => {
   const query = useQuery<MemoryType[]>({
     queryKey: ["list-memories"],
     queryFn: async () => {
       const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/public/list-memories`
+        `${import.meta.env.VITE_BACKEND_URL}/public/memory`
       );
       return response.data || [];
     },
@@ -18,6 +34,17 @@ export const useListMemories = () => {
   });
   return query;
 };
+
+export const getMemoryQueryOptions = (memoryId: string) =>
+  queryOptions({
+    queryKey: ["get-memory", memoryId],
+    queryFn: async () => {
+      const response = await axios.get<MemoryType>(
+        `${import.meta.env.VITE_BACKEND_URL}/public/memory/${memoryId}`
+      );
+      return response.data || null;
+    },
+  });
 
 export const useDeleteMemoryOrFragment = () => {
   const queryClient = useQueryClient();

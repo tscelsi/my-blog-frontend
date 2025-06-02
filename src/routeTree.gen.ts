@@ -12,8 +12,10 @@
 
 import { Route as rootRoute } from './routes/__root'
 import { Route as LoginImport } from './routes/login'
-import { Route as IndexImport } from './routes/index'
+import { Route as LayoutImport } from './routes/_layout'
+import { Route as LayoutIndexImport } from './routes/_layout.index'
 import { Route as AuthConfirmImport } from './routes/auth/confirm'
+import { Route as LayoutMemoryIdImport } from './routes/_layout.$memoryId'
 
 // Create/Update Routes
 
@@ -23,10 +25,15 @@ const LoginRoute = LoginImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
-const IndexRoute = IndexImport.update({
+const LayoutRoute = LayoutImport.update({
+  id: '/_layout',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const LayoutIndexRoute = LayoutIndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRoute,
+  getParentRoute: () => LayoutRoute,
 } as any)
 
 const AuthConfirmRoute = AuthConfirmImport.update({
@@ -35,15 +42,21 @@ const AuthConfirmRoute = AuthConfirmImport.update({
   getParentRoute: () => rootRoute,
 } as any)
 
+const LayoutMemoryIdRoute = LayoutMemoryIdImport.update({
+  id: '/$memoryId',
+  path: '/$memoryId',
+  getParentRoute: () => LayoutRoute,
+} as any)
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexImport
+    '/_layout': {
+      id: '/_layout'
+      path: ''
+      fullPath: ''
+      preLoaderRoute: typeof LayoutImport
       parentRoute: typeof rootRoute
     }
     '/login': {
@@ -53,6 +66,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginImport
       parentRoute: typeof rootRoute
     }
+    '/_layout/$memoryId': {
+      id: '/_layout/$memoryId'
+      path: '/$memoryId'
+      fullPath: '/$memoryId'
+      preLoaderRoute: typeof LayoutMemoryIdImport
+      parentRoute: typeof LayoutImport
+    }
     '/auth/confirm': {
       id: '/auth/confirm'
       path: '/auth/confirm'
@@ -60,47 +80,78 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthConfirmImport
       parentRoute: typeof rootRoute
     }
+    '/_layout/': {
+      id: '/_layout/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof LayoutIndexImport
+      parentRoute: typeof LayoutImport
+    }
   }
 }
 
 // Create and export the route tree
 
+interface LayoutRouteChildren {
+  LayoutMemoryIdRoute: typeof LayoutMemoryIdRoute
+  LayoutIndexRoute: typeof LayoutIndexRoute
+}
+
+const LayoutRouteChildren: LayoutRouteChildren = {
+  LayoutMemoryIdRoute: LayoutMemoryIdRoute,
+  LayoutIndexRoute: LayoutIndexRoute,
+}
+
+const LayoutRouteWithChildren =
+  LayoutRoute._addFileChildren(LayoutRouteChildren)
+
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
+  '': typeof LayoutRouteWithChildren
   '/login': typeof LoginRoute
+  '/$memoryId': typeof LayoutMemoryIdRoute
   '/auth/confirm': typeof AuthConfirmRoute
+  '/': typeof LayoutIndexRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
   '/login': typeof LoginRoute
+  '/$memoryId': typeof LayoutMemoryIdRoute
   '/auth/confirm': typeof AuthConfirmRoute
+  '/': typeof LayoutIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/': typeof IndexRoute
+  '/_layout': typeof LayoutRouteWithChildren
   '/login': typeof LoginRoute
+  '/_layout/$memoryId': typeof LayoutMemoryIdRoute
   '/auth/confirm': typeof AuthConfirmRoute
+  '/_layout/': typeof LayoutIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/login' | '/auth/confirm'
+  fullPaths: '' | '/login' | '/$memoryId' | '/auth/confirm' | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/login' | '/auth/confirm'
-  id: '__root__' | '/' | '/login' | '/auth/confirm'
+  to: '/login' | '/$memoryId' | '/auth/confirm' | '/'
+  id:
+    | '__root__'
+    | '/_layout'
+    | '/login'
+    | '/_layout/$memoryId'
+    | '/auth/confirm'
+    | '/_layout/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
+  LayoutRoute: typeof LayoutRouteWithChildren
   LoginRoute: typeof LoginRoute
   AuthConfirmRoute: typeof AuthConfirmRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
+  LayoutRoute: LayoutRouteWithChildren,
   LoginRoute: LoginRoute,
   AuthConfirmRoute: AuthConfirmRoute,
 }
@@ -115,19 +166,31 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/",
+        "/_layout",
         "/login",
         "/auth/confirm"
       ]
     },
-    "/": {
-      "filePath": "index.tsx"
+    "/_layout": {
+      "filePath": "_layout.tsx",
+      "children": [
+        "/_layout/$memoryId",
+        "/_layout/"
+      ]
     },
     "/login": {
       "filePath": "login.tsx"
     },
+    "/_layout/$memoryId": {
+      "filePath": "_layout.$memoryId.tsx",
+      "parent": "/_layout"
+    },
     "/auth/confirm": {
       "filePath": "auth/confirm.tsx"
+    },
+    "/_layout/": {
+      "filePath": "_layout.index.tsx",
+      "parent": "/_layout"
     }
   }
 }

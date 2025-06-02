@@ -1,22 +1,20 @@
+import { Link } from "@tanstack/react-router";
 import { useActiveMemory } from "../hooks/useActiveMemory";
-import { useListMemories } from "../memory_service";
 import { formatDate } from "../utils/date_stuff";
+import { Memory } from "../types";
 
-export const MemoryList = () => {
-  const query = useListMemories();
+type MemoryListProps = {
+  memories: Memory[];
+};
+
+export const MemoryList = ({ memories }: MemoryListProps) => {
   const { setActiveMemory } = useActiveMemory();
 
   return (
     <div className="flex flex-col">
-      {query.isLoading && (
-        <div className="border-y">
-          <p className="opacity-40 mx-6 md:mx-8">{"<blank>"}</p>
-        </div>
-      )}
-      {query.isSuccess &&
-        query.data.map((memory) => (
+      {memories.map((memory) => (
+        <Link key={memory.id} to="/$memoryId" params={{ memoryId: memory.id }}>
           <div
-            key={memory.id}
             className="hover:opacity-80 cursor-pointer border-b border-dark-grey first:border-t"
             onClick={() => setActiveMemory(memory)}
           >
@@ -24,7 +22,8 @@ export const MemoryList = () => {
               {formatDate(memory.created_at)}: {memory.title}
             </p>
           </div>
-        ))}
+        </Link>
+      ))}
     </div>
   );
 };
