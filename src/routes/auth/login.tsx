@@ -33,7 +33,7 @@ export default function Login() {
     if (error) {
       alert(error.message);
     } else {
-      alert("Check your email for the login link!");
+      redirect({ to: "/" });
     }
     setLoading(false);
   };
