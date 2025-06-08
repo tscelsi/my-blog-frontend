@@ -11,19 +11,15 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as LoginImport } from './routes/login'
 import { Route as LayoutImport } from './routes/_layout'
 import { Route as LayoutIndexImport } from './routes/_layout.index'
+import { Route as AuthLoginImport } from './routes/auth/login'
+import { Route as AuthForgotPasswordImport } from './routes/auth/forgot-password'
 import { Route as AuthConfirmImport } from './routes/auth/confirm'
+import { Route as AuthChangePasswordImport } from './routes/auth/change-password'
 import { Route as LayoutMemoryIdImport } from './routes/_layout.$memoryId'
 
 // Create/Update Routes
-
-const LoginRoute = LoginImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRoute,
-} as any)
 
 const LayoutRoute = LayoutImport.update({
   id: '/_layout',
@@ -36,9 +32,27 @@ const LayoutIndexRoute = LayoutIndexImport.update({
   getParentRoute: () => LayoutRoute,
 } as any)
 
+const AuthLoginRoute = AuthLoginImport.update({
+  id: '/auth/login',
+  path: '/auth/login',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthForgotPasswordRoute = AuthForgotPasswordImport.update({
+  id: '/auth/forgot-password',
+  path: '/auth/forgot-password',
+  getParentRoute: () => rootRoute,
+} as any)
+
 const AuthConfirmRoute = AuthConfirmImport.update({
   id: '/auth/confirm',
   path: '/auth/confirm',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const AuthChangePasswordRoute = AuthChangePasswordImport.update({
+  id: '/auth/change-password',
+  path: '/auth/change-password',
   getParentRoute: () => rootRoute,
 } as any)
 
@@ -59,13 +73,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutImport
       parentRoute: typeof rootRoute
     }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginImport
-      parentRoute: typeof rootRoute
-    }
     '/_layout/$memoryId': {
       id: '/_layout/$memoryId'
       path: '/$memoryId'
@@ -73,11 +80,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LayoutMemoryIdImport
       parentRoute: typeof LayoutImport
     }
+    '/auth/change-password': {
+      id: '/auth/change-password'
+      path: '/auth/change-password'
+      fullPath: '/auth/change-password'
+      preLoaderRoute: typeof AuthChangePasswordImport
+      parentRoute: typeof rootRoute
+    }
     '/auth/confirm': {
       id: '/auth/confirm'
       path: '/auth/confirm'
       fullPath: '/auth/confirm'
       preLoaderRoute: typeof AuthConfirmImport
+      parentRoute: typeof rootRoute
+    }
+    '/auth/forgot-password': {
+      id: '/auth/forgot-password'
+      path: '/auth/forgot-password'
+      fullPath: '/auth/forgot-password'
+      preLoaderRoute: typeof AuthForgotPasswordImport
+      parentRoute: typeof rootRoute
+    }
+    '/auth/login': {
+      id: '/auth/login'
+      path: '/auth/login'
+      fullPath: '/auth/login'
+      preLoaderRoute: typeof AuthLoginImport
       parentRoute: typeof rootRoute
     }
     '/_layout/': {
@@ -107,53 +135,78 @@ const LayoutRouteWithChildren =
 
 export interface FileRoutesByFullPath {
   '': typeof LayoutRouteWithChildren
-  '/login': typeof LoginRoute
   '/$memoryId': typeof LayoutMemoryIdRoute
+  '/auth/change-password': typeof AuthChangePasswordRoute
   '/auth/confirm': typeof AuthConfirmRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/login': typeof AuthLoginRoute
   '/': typeof LayoutIndexRoute
 }
 
 export interface FileRoutesByTo {
-  '/login': typeof LoginRoute
   '/$memoryId': typeof LayoutMemoryIdRoute
+  '/auth/change-password': typeof AuthChangePasswordRoute
   '/auth/confirm': typeof AuthConfirmRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/login': typeof AuthLoginRoute
   '/': typeof LayoutIndexRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_layout': typeof LayoutRouteWithChildren
-  '/login': typeof LoginRoute
   '/_layout/$memoryId': typeof LayoutMemoryIdRoute
+  '/auth/change-password': typeof AuthChangePasswordRoute
   '/auth/confirm': typeof AuthConfirmRoute
+  '/auth/forgot-password': typeof AuthForgotPasswordRoute
+  '/auth/login': typeof AuthLoginRoute
   '/_layout/': typeof LayoutIndexRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/login' | '/$memoryId' | '/auth/confirm' | '/'
+  fullPaths:
+    | ''
+    | '/$memoryId'
+    | '/auth/change-password'
+    | '/auth/confirm'
+    | '/auth/forgot-password'
+    | '/auth/login'
+    | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/login' | '/$memoryId' | '/auth/confirm' | '/'
+  to:
+    | '/$memoryId'
+    | '/auth/change-password'
+    | '/auth/confirm'
+    | '/auth/forgot-password'
+    | '/auth/login'
+    | '/'
   id:
     | '__root__'
     | '/_layout'
-    | '/login'
     | '/_layout/$memoryId'
+    | '/auth/change-password'
     | '/auth/confirm'
+    | '/auth/forgot-password'
+    | '/auth/login'
     | '/_layout/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   LayoutRoute: typeof LayoutRouteWithChildren
-  LoginRoute: typeof LoginRoute
+  AuthChangePasswordRoute: typeof AuthChangePasswordRoute
   AuthConfirmRoute: typeof AuthConfirmRoute
+  AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
+  AuthLoginRoute: typeof AuthLoginRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   LayoutRoute: LayoutRouteWithChildren,
-  LoginRoute: LoginRoute,
+  AuthChangePasswordRoute: AuthChangePasswordRoute,
   AuthConfirmRoute: AuthConfirmRoute,
+  AuthForgotPasswordRoute: AuthForgotPasswordRoute,
+  AuthLoginRoute: AuthLoginRoute,
 }
 
 export const routeTree = rootRoute
@@ -167,8 +220,10 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/_layout",
-        "/login",
-        "/auth/confirm"
+        "/auth/change-password",
+        "/auth/confirm",
+        "/auth/forgot-password",
+        "/auth/login"
       ]
     },
     "/_layout": {
@@ -178,15 +233,21 @@ export const routeTree = rootRoute
         "/_layout/"
       ]
     },
-    "/login": {
-      "filePath": "login.tsx"
-    },
     "/_layout/$memoryId": {
       "filePath": "_layout.$memoryId.tsx",
       "parent": "/_layout"
     },
+    "/auth/change-password": {
+      "filePath": "auth/change-password.tsx"
+    },
     "/auth/confirm": {
       "filePath": "auth/confirm.tsx"
+    },
+    "/auth/forgot-password": {
+      "filePath": "auth/forgot-password.tsx"
+    },
+    "/auth/login": {
+      "filePath": "auth/login.tsx"
     },
     "/_layout/": {
       "filePath": "_layout.index.tsx",
