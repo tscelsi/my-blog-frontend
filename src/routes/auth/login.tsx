@@ -39,37 +39,28 @@ export default function Login() {
   };
 
   return (
-    <>
-      <form onSubmit={handleLogin}>
-        <div className="flex flex-col gap-4">
-          <Input
-            type="email"
-            placeholder="Your email"
-            value={email}
-            required={true}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-          <Input
-            type="password"
-            placeholder="Your password"
-            value={password}
-            required={true}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        <div>
-          <button className={"button block"} disabled={loading}>
-            {loading ? <span>Loading</span> : <span>Login</span>}
-          </button>
-        </div>
-      </form>
-      <button className={"button block"} disabled={loading}>
-        {loading ? (
-          <span>Loading</span>
-        ) : (
-          <Link to={"/auth/forgot-password"}>Forgot password</Link>
-        )}
-      </button>
-    </>
+    <form onSubmit={handleLogin}>
+      <div className="flex flex-col gap-4">
+        <Input
+          type="email"
+          placeholder="Your email"
+          value={email}
+          required={true}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <Input
+          type="password"
+          placeholder="Your password"
+          value={password}
+          required={true}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
+      <div>
+        <button className={"button block"} disabled={loading}>
+          {loading ? <span>Loading</span> : <span>Login</span>}
+        </button>
+      </div>
+    </form>
   );
 }
