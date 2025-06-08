@@ -5,12 +5,16 @@ import { getMemoryQueryOptions } from "../memory_service";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useIsSmallScreen } from "../hooks/useIsSmallScreen";
 import { Footer } from "../components/Footer";
+import { Loader } from "../components/Loader";
 
 export const Route = createFileRoute("/_layout/$memoryId")({
   component: MemoryPage,
   loader: ({ context: { queryClient }, params: { memoryId } }) => {
     return queryClient.ensureQueryData(getMemoryQueryOptions(memoryId));
   },
+  pendingComponent: () => <Loader />,
+  pendingMs: 0,
+  pendingMinMs: 10,
 });
 
 export function MemoryPage() {

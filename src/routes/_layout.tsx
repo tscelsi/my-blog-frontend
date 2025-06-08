@@ -7,12 +7,16 @@ import { listMemoriesQueryOptions } from "../memory_service";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useIsSmallScreen } from "../hooks/useIsSmallScreen";
 import { useRef } from "react";
+import { Loader } from "../components/Loader";
 
 export const Route = createFileRoute("/_layout")({
   component: Layout,
   loader: ({ context: { queryClient } }) => {
     return queryClient.ensureQueryData(listMemoriesQueryOptions());
   },
+  pendingComponent: () => <Loader />,
+  pendingMs: 10,
+  pendingMinMs: 1000,
 });
 
 export function Layout() {
