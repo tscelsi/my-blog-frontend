@@ -58,10 +58,10 @@ export const Memory = ({ memory }: { memory: MemoryType }) => {
               <ArrowEnterLeft20Filled />
             </Link>
           )}
-          <div className="flex justify-between items-end gap-4">
+          <div className="flex justify-between items-end gap-4 text-ellipsis overflow-hidden text-wrap">
             <div className="flex gap-2 items-center">
               {!isEditing ? (
-                <h3 className="text-2xl font-bold text-ellipsis overflow-hidden text-nowrap">
+                <h3 className="text-2xl font-bold">
                   {updatedMemoryTitle}
                 </h3>
               ) : (
