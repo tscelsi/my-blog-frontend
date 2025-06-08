@@ -1,7 +1,7 @@
 import { FormEventHandler, useState } from "react";
 import { supabase } from "../../supabaseClient";
 
-import { createFileRoute, Link, redirect } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 import { Input } from "../../components/inputs";
 
 export const Route = createFileRoute("/auth/login")({
