@@ -15,7 +15,7 @@ export const Route = createFileRoute("/_layout")({
     return queryClient.ensureQueryData(listMemoriesQueryOptions());
   },
   pendingComponent: () => <Loader />,
-  pendingMs: 10,
+  pendingMs: 100,
   pendingMinMs: 1000,
 });
 

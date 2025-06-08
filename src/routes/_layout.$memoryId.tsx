@@ -13,8 +13,8 @@ export const Route = createFileRoute("/_layout/$memoryId")({
     return queryClient.ensureQueryData(getMemoryQueryOptions(memoryId));
   },
   pendingComponent: () => <Loader />,
-  pendingMs: 0,
-  pendingMinMs: 10,
+  pendingMs: 100,
+  pendingMinMs: 1000,
 });
 
 export function MemoryPage() {
