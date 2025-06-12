@@ -9,7 +9,7 @@ import { formatDate } from "../utils/date_stuff";
 import { useAuth } from "../hooks/useAuth";
 import { useIsSmallScreen } from "../hooks/useIsSmallScreen";
 import { ArrowEnterLeft20Filled } from "@fluentui/react-icons";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link } from "@tanstack/react-router";
 import { MemoryToolbar } from "./Toolbar/MemoryToolbar";
 
 export const Memory = ({ memory }: { memory: MemoryType }) => {
@@ -44,8 +44,6 @@ export const Memory = ({ memory }: { memory: MemoryType }) => {
     }
     setIsEditing(!isEditing);
   };
-
-  const navigate = useNavigate();
 
   return (
     <div className="flex justify-center">

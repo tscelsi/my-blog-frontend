@@ -63,7 +63,6 @@ export const TextDialog = ({
             memory_id,
             fragment_id: fragment.id,
           },
-          session,
         });
         setIsOpen(false);
       } else if (memory_id) {
@@ -74,7 +73,6 @@ export const TextDialog = ({
               memory_id,
               content: ops || [],
             },
-            session,
           })
           .then(() => {
             setIsOpen(false);
@@ -87,7 +85,6 @@ export const TextDialog = ({
               memory_title: "blank_",
               content: ops || [],
             },
-            session,
           })
           .then(() => {
             setIsOpen(false);
@@ -160,7 +157,7 @@ export const FileDialog = ({ type, memory_id, button }: FileDialogProps) => {
         toSendData.append("file", file as Blob);
         toSendData.append("memory_id", memory_id);
         toSendData.append("type", type);
-        addFileToMemory.mutateAsync({ data: toSendData, session }).then(() => {
+        addFileToMemory.mutateAsync({ data: toSendData }).then(() => {
           setIsOpen(false);
         });
       } else {
@@ -168,11 +165,9 @@ export const FileDialog = ({ type, memory_id, button }: FileDialogProps) => {
         toSendData.append("file", file as Blob);
         toSendData.append("memory_title", "blank_");
         toSendData.append("type", type);
-        createMemoryFromFile
-          .mutateAsync({ data: toSendData, session })
-          .then(() => {
-            setIsOpen(false);
-          });
+        createMemoryFromFile.mutateAsync({ data: toSendData }).then(() => {
+          setIsOpen(false);
+        });
       }
     },
     [session, memory_id]
