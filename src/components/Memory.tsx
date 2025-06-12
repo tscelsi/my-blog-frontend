@@ -34,8 +34,8 @@ export const Memory = ({ memory }: { memory: MemoryType }) => {
       ) {
         // about to close - update fragment ordering
         updateOrderingMutation.mutateAsync({
+          memory_id: memory.id,
           data: {
-            memory_id: memory.id,
             memory_title: updatedMemoryTitle,
             fragment_ids: fragments.map((fragment) => fragment.id),
           },

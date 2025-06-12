@@ -41,10 +41,12 @@ export const useDeleteMemoryOrFragment = () => {
       fragment_ids?: string[];
     }) => {
       const data = {
-        memory_id,
         ...(fragment_ids && { fragment_ids }),
       };
-      return await createAxiosClient().post("/memory/forget", data);
+      return await createAxiosClient().post(
+        `/memory/${memory_id}/forget`,
+        data
+      );
     },
     onSuccess: () => {
       // Invalidate and refetch
@@ -209,9 +211,9 @@ export const useModifyRichTextFragment = () => {
 };
 
 type UpdateMemoryType = {
+  memory_id: string;
   data: {
     fragment_ids: string[];
-    memory_id: string;
     memory_title: string;
   };
 };
@@ -220,7 +222,10 @@ export const useUpdateMemory = (memory_id: string) => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (options: UpdateMemoryType) => {
-      return await createAxiosClient().post("/memory/update", options.data);
+      return await createAxiosClient().post(
+        `/memory/${options.memory_id}/update`,
+        options.data
+      );
     },
     onSuccess: () => {
       // Invalidate and refetch
