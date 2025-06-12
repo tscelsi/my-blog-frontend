@@ -1,26 +1,30 @@
 import { Link } from "@tanstack/react-router";
-import { useActiveMemory } from "../hooks/useActiveMemory";
+import { clsx } from "clsx";
 import { formatDate } from "../utils/date_stuff";
-import { Memory } from "../types";
+import { ListMemoryItem } from "../types";
+import { useAuth } from "../hooks/useAuth";
 
 type MemoryListProps = {
-  memories: Memory[];
+  memories: ListMemoryItem[];
 };
 
 export const MemoryList = ({ memories }: MemoryListProps) => {
-  const { setActiveMemory } = useActiveMemory();
-
+  const { session } = useAuth();
   return (
     <div className="flex flex-col">
       {memories.map((memory) => (
         <Link
-          className="hover:opacity-80 cursor-pointer border-b border-dark-grey first:border-t"
+          className={clsx(
+            "hover:opacity-80 cursor-pointer border-b border-dark-grey first:border-t"
+          )}
           key={memory.id}
           to="/$memoryId"
           params={{ memoryId: memory.id }}
         >
-          <div onClick={() => setActiveMemory(memory)}>
+          <div>
             <p className="mx-6 md:mx-8">
+              {session && memory.pinned && "[pinned] "}
+              {session && (memory.private ? "[private] " : "[public] ")}
               {formatDate(memory.created_at)}: {memory.title}
             </p>
           </div>

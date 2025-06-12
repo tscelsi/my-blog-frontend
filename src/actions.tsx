@@ -8,7 +8,7 @@ export const Del = ({ onClick }: DelProps) => {
       className="cursor-pointer text-error hover:opacity-80 w-fit"
       onClick={onClick}
     >
-      <p>del</p>
+      <p>[del]</p>
     </div>
   );
 };
@@ -20,7 +20,7 @@ export const Download = ({ url }: { url: string }) => {
       href={url}
       target="_blank"
     >
-      download
+      [download]
     </a>
   );
 };

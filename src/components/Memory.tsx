@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { type Memory as MemoryType } from "../types";
 import { Reorder } from "motion/react";
-import { Del } from "../actions";
-import { useDeleteMemoryOrFragment, useUpdateMemory } from "../memory_service";
+import { useUpdateMemory } from "../memory_service";
 import { Toolbar } from "./Toolbar/MainToolbar";
 import { Audio, Text, Image, File, RichText } from "./Fragment";
 import { Input } from "./inputs";
@@ -11,12 +10,12 @@ import { useAuth } from "../hooks/useAuth";
 import { useIsSmallScreen } from "../hooks/useIsSmallScreen";
 import { ArrowEnterLeft20Filled } from "@fluentui/react-icons";
 import { Link, useNavigate } from "@tanstack/react-router";
+import { MemoryToolbar } from "./Toolbar/MemoryToolbar";
 
 export const Memory = ({ memory }: { memory: MemoryType }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [fragments, setFragments] = useState(memory.fragments);
   const [updatedMemoryTitle, setUpdatedMemoryTitle] = useState(memory.title);
-  const deleteMutation = useDeleteMemoryOrFragment();
   const updateOrderingMutation = useUpdateMemory(memory.id);
   const isSmallScreen = useIsSmallScreen();
   const { session } = useAuth();
@@ -40,7 +39,6 @@ export const Memory = ({ memory }: { memory: MemoryType }) => {
             memory_title: updatedMemoryTitle,
             fragment_ids: fragments.map((fragment) => fragment.id),
           },
-          session: session,
         });
       }
     }
@@ -58,12 +56,21 @@ export const Memory = ({ memory }: { memory: MemoryType }) => {
               <ArrowEnterLeft20Filled />
             </Link>
           )}
+          {isSmallScreen && (
+            <div className="flex gap-4">
+              {session && (
+                <MemoryToolbar
+                  memory={memory}
+                  isEditing={isEditing}
+                  toggleEdit={toggleEdit}
+                />
+              )}
+            </div>
+          )}
           <div className="flex justify-between items-end gap-4 text-ellipsis overflow-hidden text-wrap">
             <div className="flex gap-2 items-center">
               {!isEditing ? (
-                <h3 className="text-2xl font-bold">
-                  {updatedMemoryTitle}
-                </h3>
+                <h3 className="text-2xl font-bold">{updatedMemoryTitle}</h3>
               ) : (
                 <Input
                   defaultValue={memory.title}
@@ -73,32 +80,17 @@ export const Memory = ({ memory }: { memory: MemoryType }) => {
                 />
               )}
             </div>
-            <div className="flex gap-4">
-              {session && (
-                <p
-                  onClick={toggleEdit}
-                  className="cursor-pointer hover:opacity-80"
-                >
-                  {isEditing ? "done" : "edit"}
-                </p>
-              )}
-              <div>
-                {isEditing && session && (
-                  <Del
-                    onClick={async () => {
-                      await deleteMutation
-                        .mutateAsync({
-                          memory_id: memory.id,
-                          session: session,
-                        })
-                        .then(() => {
-                          navigate({ to: "/" });
-                        });
-                    }}
+            {!isSmallScreen && (
+              <div className="flex gap-4">
+                {session && (
+                  <MemoryToolbar
+                    memory={memory}
+                    isEditing={isEditing}
+                    toggleEdit={toggleEdit}
                   />
                 )}
               </div>
-            </div>
+            )}
           </div>
           <h6 className="font-bold">{formatDate(memory.created_at)}</h6>
         </div>

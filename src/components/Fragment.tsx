@@ -66,7 +66,6 @@ export const File = ({ fragment, memory, isEditing }: FileFragmentProps) => {
             await deleteMutation.mutateAsync({
               memory_id: memory.id,
               fragment_ids: [fragment.id],
-              session,
             });
           }}
         />
@@ -123,7 +122,6 @@ export const Audio = ({ memory, fragment, isEditing }: FileFragmentProps) => {
             await deleteMutation.mutateAsync({
               memory_id: memory.id,
               fragment_ids: [fragment.id],
-              session,
             });
           }}
         />
@@ -157,7 +155,6 @@ export const Image = ({ memory, fragment, isEditing }: FileFragmentProps) => {
               await deleteMutation.mutateAsync({
                 memory_id: memory.id,
                 fragment_ids: [fragment.id],
-                session,
               });
             }}
           />
@@ -186,7 +183,6 @@ export const Text = ({ fragment, isEditing, memory }: TextFragmentProps) => {
           fragment_id: fragment.id,
           text: newValue,
         },
-        session,
       });
     }
   };
@@ -207,7 +203,6 @@ export const Text = ({ fragment, isEditing, memory }: TextFragmentProps) => {
                 deleteMutation.mutateAsync({
                   memory_id: memory.id,
                   fragment_ids: [fragment.id],
-                  session,
                 });
               }}
             />
@@ -253,14 +248,13 @@ export const RichText = ({
           <TextDialog
             memory_id={memory.id}
             fragment={fragment}
-            button={<p className="cursor-pointer hover:opacity-80">edit</p>}
+            button={<p className="cursor-pointer hover:opacity-80">[edit]</p>}
           />
           <Del
             onClick={() => {
               deleteMutation.mutateAsync({
                 memory_id: memory.id,
                 fragment_ids: [fragment.id],
-                session,
               });
             }}
           />

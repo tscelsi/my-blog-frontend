@@ -31,6 +31,14 @@ export interface Memory {
   user_id: string;
   title: string;
   fragments: (FileFragment | TextFragment | RichTextFragment)[];
+  private: boolean;
+  pinned: boolean;
+  tags: string[];
   created_at: string;
   updated_at: string;
 }
+
+export type ListMemoryItem = Pick<
+  Memory,
+  "id" | "title" | "pinned" | "private" | "created_at"
+>;

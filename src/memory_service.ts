@@ -1,50 +1,34 @@
-import { Session } from "@supabase/supabase-js";
 import {
   queryOptions,
   useMutation,
-  useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
-import axios from "axios";
 import { type Memory as MemoryType } from "./types";
 import { Op } from "quill";
+import { createAxiosClient } from "./utils/axios_interceptor";
 
-export const listMemoriesQueryOptions = () =>
-  queryOptions({
+export const listMemoriesQueryOptions = () => {
+  return queryOptions({
     queryKey: ["memory"],
     queryFn: async () => {
-      const response = await axios.get<MemoryType[]>(
-        `${import.meta.env.VITE_BACKEND_URL}/public/memory`
-      );
+      const response =
+        await createAxiosClient().get<MemoryType[]>("/public/memory");
       return response.data || [];
     },
   });
-
-export const useListMemories = () => {
-  const query = useQuery<MemoryType[]>({
-    queryKey: ["memory"],
-    queryFn: async () => {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BACKEND_URL}/public/memory`
-      );
-      return response.data || [];
-    },
-    staleTime: Infinity,
-    refetchOnWindowFocus: true,
-  });
-  return query;
 };
 
-export const getMemoryQueryOptions = (memoryId: string) =>
-  queryOptions({
+export const getMemoryQueryOptions = (memoryId: string) => {
+  return queryOptions({
     queryKey: ["memory", memoryId],
     queryFn: async () => {
-      const response = await axios.get<MemoryType>(
-        `${import.meta.env.VITE_BACKEND_URL}/public/memory/${memoryId}`
+      const response = await createAxiosClient().get<MemoryType>(
+        `/public/memory/${memoryId}`
       );
       return response.data || null;
     },
   });
+};
 
 export const useDeleteMemoryOrFragment = () => {
   const queryClient = useQueryClient();
@@ -52,25 +36,15 @@ export const useDeleteMemoryOrFragment = () => {
     mutationFn: async ({
       memory_id,
       fragment_ids,
-      session,
     }: {
       memory_id: string;
       fragment_ids?: string[];
-      session: Session;
     }) => {
       const data = {
         memory_id,
         ...(fragment_ids && { fragment_ids }),
       };
-      return await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/memory/forget`,
-        data,
-        {
-          headers: {
-            Authorization: `Bearer ${session.access_token}`,
-          },
-        }
-      );
+      return await createAxiosClient().post("/memory/forget", data);
     },
     onSuccess: () => {
       // Invalidate and refetch
@@ -82,22 +56,13 @@ export const useDeleteMemoryOrFragment = () => {
 
 type CreateMemoryFromFileType = {
   data: FormData;
-  session: Session;
 };
 
 export const useCreateMemoryFromFile = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (args: CreateMemoryFromFileType) => {
-      return await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/memory/from-file`,
-        args.data,
-        {
-          headers: {
-            Authorization: `Bearer ${args.session.access_token}`,
-          },
-        }
-      );
+      return await createAxiosClient().post("/memory/from-file", args.data);
     },
     onSuccess: () => {
       // Invalidate and refetch
@@ -109,22 +74,13 @@ export const useCreateMemoryFromFile = () => {
 
 type CreateMemoryFromTextType = {
   data: { memory_title: string; text: string };
-  session: Session;
 };
 
 export const useCreateMemoryFromText = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (args: CreateMemoryFromTextType) => {
-      return await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/memory/from-text`,
-        args.data,
-        {
-          headers: {
-            Authorization: `Bearer ${args.session.access_token}`,
-          },
-        }
-      );
+      return await createAxiosClient().post("/memory/from-text", args.data);
     },
     onSuccess: () => {
       // Invalidate and refetch
@@ -136,21 +92,15 @@ export const useCreateMemoryFromText = () => {
 
 type CreateMemoryFromRichTextType = {
   data: { memory_title: string; content: Op[] };
-  session: Session;
 };
 
 export const useCreateMemoryFromRichText = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (args: CreateMemoryFromRichTextType) => {
-      return await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/memory/from-rich-text`,
-        args.data,
-        {
-          headers: {
-            Authorization: `Bearer ${args.session.access_token}`,
-          },
-        }
+      return await createAxiosClient().post(
+        "/memory/from-rich-text",
+        args.data
       );
     },
     onSuccess: () => {
@@ -163,22 +113,13 @@ export const useCreateMemoryFromRichText = () => {
 
 type AddFileFragmentToMemoryType = {
   data: FormData;
-  session: Session;
 };
 
 export const useAddFileFragmentToMemory = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (args: AddFileFragmentToMemoryType) => {
-      return await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/fragment/add-file`,
-        args.data,
-        {
-          headers: {
-            Authorization: `Bearer ${args.session.access_token}`,
-          },
-        }
-      );
+      return await createAxiosClient().post("/fragment/add-file", args.data);
     },
     onSuccess: () => {
       // Invalidate and refetch
@@ -190,22 +131,13 @@ export const useAddFileFragmentToMemory = () => {
 
 type AddTextFragmentToMemoryType = {
   data: { text: string; memory_id: string };
-  session: Session;
 };
 
 export const useAddTextFragmentToMemory = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (args: AddTextFragmentToMemoryType) => {
-      return await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/fragment/add-text`,
-        args.data,
-        {
-          headers: {
-            Authorization: `Bearer ${args.session.access_token}`,
-          },
-        }
-      );
+      return await createAxiosClient().post("/fragment/add-text", args.data);
     },
     onSuccess: () => {
       // Invalidate and refetch
@@ -217,22 +149,13 @@ export const useAddTextFragmentToMemory = () => {
 
 type ModifyTextFragmentType = {
   data: { text: string; memory_id: string; fragment_id: string };
-  session: Session;
 };
 
 export const useModifyTextFragment = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (args: ModifyTextFragmentType) => {
-      return await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/fragment/modify-text`,
-        args.data,
-        {
-          headers: {
-            Authorization: `Bearer ${args.session.access_token}`,
-          },
-        }
-      );
+      return await createAxiosClient().post("/fragment/modify-text", args.data);
     },
     onSuccess: () => {
       // Invalidate and refetch
@@ -244,21 +167,15 @@ export const useModifyTextFragment = () => {
 
 type AddRichTextFragmentToMemoryType = {
   data: { content: Op[]; memory_id: string };
-  session: Session;
 };
 
 export const useAddRichTextFragmentToMemory = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (args: AddRichTextFragmentToMemoryType) => {
-      return await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/fragment/add-rich-text`,
-        args.data,
-        {
-          headers: {
-            Authorization: `Bearer ${args.session.access_token}`,
-          },
-        }
+      return await createAxiosClient().post(
+        "/fragment/add-rich-text",
+        args.data
       );
     },
     onSuccess: () => {
@@ -271,21 +188,15 @@ export const useAddRichTextFragmentToMemory = () => {
 
 type ModifyRichTextFragmentType = {
   data: { content: Op[]; memory_id: string; fragment_id: string };
-  session: Session;
 };
 
 export const useModifyRichTextFragment = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (args: ModifyRichTextFragmentType) => {
-      return await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/fragment/modify-rich-text`,
-        args.data,
-        {
-          headers: {
-            Authorization: `Bearer ${args.session.access_token}`,
-          },
-        }
+      return await createAxiosClient().post(
+        "/fragment/modify-rich-text",
+        args.data
       );
     },
     onSuccess: () => {
@@ -303,26 +214,61 @@ type UpdateMemoryType = {
     memory_id: string;
     memory_title: string;
   };
-  session: Session;
 };
 
 export const useUpdateMemory = (memory_id: string) => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (options: UpdateMemoryType) => {
-      return await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/memory/update`,
-        options.data,
-        {
-          headers: {
-            Authorization: `Bearer ${options.session.access_token}`,
-          },
-        }
-      );
+      return await createAxiosClient().post("/memory/update", options.data);
     },
     onSuccess: () => {
       // Invalidate and refetch
       queryClient.invalidateQueries({ queryKey: ["memory", memory_id] });
+    },
+  });
+  return mutation;
+};
+
+export const usePinMemory = () => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: async ({
+      memory_id,
+      pin,
+    }: {
+      memory_id: string;
+      pin: boolean;
+    }) => {
+      return await createAxiosClient().put(`/memory/${memory_id}/set-pin`, {
+        pin,
+      });
+    },
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["memory"] });
+    },
+  });
+  return mutation;
+};
+
+export const useSetMemoryPrivacy = () => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: async ({
+      memory_id,
+      private_,
+    }: {
+      memory_id: string;
+      private_: boolean;
+    }) => {
+      return await createAxiosClient().put(`/memory/${memory_id}/set-private`, {
+        private: private_,
+      });
+    },
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["memory"] });
     },
   });
   return mutation;
