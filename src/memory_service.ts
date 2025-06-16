@@ -3,16 +3,17 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { type Memory as MemoryType } from "./types";
+import { ListMemoryItem, type Memory as MemoryType } from "./types";
 import { Op } from "quill";
 import { createAxiosClient } from "./utils/axios_interceptor";
+import { MemoryList } from "./domain/memoryList";
 
 export const listMemoriesQueryOptions = () => {
   return queryOptions({
     queryKey: ["memory"],
     queryFn: async () => {
       const response =
-        await createAxiosClient().get<MemoryType[]>("/public/memory");
+        await createAxiosClient().get<ListMemoryItem[]>("/public/memory");
       return response.data || [];
     },
   });
@@ -235,46 +236,58 @@ export const useUpdateMemory = (memory_id: string) => {
   return mutation;
 };
 
-export const usePinMemory = () => {
+export type PinMemoryArgs = {
+  pin: boolean;
+  memory_id: string;
+};
+
+export const usePinMemory = (memory_id: string) => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: async ({
-      memory_id,
-      pin,
-    }: {
-      memory_id: string;
-      pin: boolean;
-    }) => {
-      return await createAxiosClient().put(`/memory/${memory_id}/set-pin`, {
-        pin,
+    mutationFn: async ({ pin, memory_id }: PinMemoryArgs) => {
+      return await createAxiosClient().put<null>(
+        `/memory/${memory_id}/set-pin`,
+        {
+          pin,
+        }
+      );
+    },
+    onMutate: async (variables) => {
+      await queryClient.cancelQueries({ queryKey: ["memory"] });
+      const previousMemories = queryClient.getQueryData<ListMemoryItem[]>([
+        "memory",
+      ]);
+      queryClient.setQueryData<ListMemoryItem[]>(["memory"], (old) => {
+        if (!old) return [];
+        const memoryList = new MemoryList([...old]);
+        memoryList.pin(variables.memory_id, variables.pin);
+        return memoryList.getMemories();
       });
+      return previousMemories;
     },
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["memory"] });
+    onError: (_error, _variables, previousMemories) => {
+      queryClient.setQueryData<ListMemoryItem[]>(["memory"], previousMemories);
     },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ["memory"] }),
+    mutationKey: ["pinMemory", memory_id],
   });
   return mutation;
 };
 
-export const useSetMemoryPrivacy = () => {
+export type SetMemoryPrivacyArgs = {
+  private_: boolean;
+};
+
+export const useSetMemoryPrivacy = (memory_id: string) => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: async ({
-      memory_id,
-      private_,
-    }: {
-      memory_id: string;
-      private_: boolean;
-    }) => {
+    mutationFn: async ({ private_ }: SetMemoryPrivacyArgs) => {
       return await createAxiosClient().put(`/memory/${memory_id}/set-private`, {
         private: private_,
       });
     },
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["memory"] });
-    },
+    onSettled: () => queryClient.invalidateQueries({ queryKey: ["memory"] }),
+    mutationKey: ["setMemoryPrivacy", memory_id],
   });
   return mutation;
 };

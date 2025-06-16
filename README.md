@@ -2,8 +2,6 @@
 
 ## TODO
 
-1. error states for file uploads that fail
-2. Text Links
-3. add audit stuff like created at dates etc. and display them
-4. make visible to other people but not editable
-5. accounts for other people (stretch, not strictly needed)
+1. optimistic data updates for smoother experience (tanstack query?)
+2. error things
+3. 404 not found page

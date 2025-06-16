@@ -17,35 +17,36 @@ export const MemoryToolbar = ({
   isEditing: boolean;
 }) => {
   const navigate = useNavigate();
-  const togglePinMutation = usePinMemory();
+  const { mutateAsync: mutateMemoryPin, variables: pinVariables } =
+    usePinMemory(memory.id);
   const deleteMutation = useDeleteMemoryOrFragment();
-  const togglePrivatePublicMutation = useSetMemoryPrivacy();
+  const { mutateAsync: mutateMemoryPrivacy, variables: privacyVariables } =
+    useSetMemoryPrivacy(memory.id);
+
   const handlePinClicked = () => {
-    togglePinMutation
-      .mutateAsync({
-        memory_id: memory.id,
-        pin: !memory.pinned,
-      })
-      .catch((error) => {
-        console.error("Error toggling pin:", error);
-      });
+    mutateMemoryPin({
+      pin: !memory.pinned,
+      memory_id: memory.id,
+    }).catch((error) => {
+      console.error("Error toggling pin:", error);
+    });
   };
 
+  const isPrivate = privacyVariables?.private_ ?? memory.private;
+  const isPinned = pinVariables?.pin ?? memory.pinned;
+
   const togglePrivatePublic = () => {
-    togglePrivatePublicMutation
-      .mutateAsync({
-        memory_id: memory.id,
-        private_: !memory.private,
-      })
-      .catch((error) => {
-        console.error("Error toggling privacy:", error);
-      });
+    mutateMemoryPrivacy({
+      private_: !memory.private,
+    }).catch((error) => {
+      console.error("Error toggling privacy:", error);
+    });
   };
 
   return (
     <>
       {isEditing &&
-        (memory.pinned ? (
+        (isPinned ? (
           <button
             onClick={handlePinClicked}
             className="hover:opacity-80 cursor-pointer"
@@ -61,7 +62,7 @@ export const MemoryToolbar = ({
           </button>
         ))}
       {isEditing &&
-        (memory.private ? (
+        (isPrivate ? (
           <button
             onClick={togglePrivatePublic}
             className="hover:opacity-80 cursor-pointer"

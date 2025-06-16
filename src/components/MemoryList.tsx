@@ -1,35 +1,57 @@
 import { Link } from "@tanstack/react-router";
-import { clsx } from "clsx";
 import { formatDate } from "../utils/date_stuff";
 import { ListMemoryItem } from "../types";
 import { useAuth } from "../hooks/useAuth";
+import { PinMemoryArgs, SetMemoryPrivacyArgs } from "../memory_service";
+import { useMutationState } from "@tanstack/react-query";
 
 type MemoryListProps = {
   memories: ListMemoryItem[];
 };
 
 export const MemoryList = ({ memories }: MemoryListProps) => {
-  const { session } = useAuth();
   return (
     <div className="flex flex-col">
       {memories.map((memory) => (
-        <Link
-          className={clsx(
-            "hover:opacity-80 cursor-pointer border-b border-dark-grey first:border-t"
-          )}
-          key={memory.id}
-          to="/$memoryId"
-          params={{ memoryId: memory.id }}
-        >
-          <div>
-            <p className="mx-6 md:mx-8">
-              {session && memory.pinned && "[pinned] "}
-              {session && (memory.private ? "[private] " : "[public] ")}
-              {formatDate(memory.created_at)}: {memory.title}
-            </p>
-          </div>
-        </Link>
+        <MemoryListItem key={memory.id} memory={memory} />
       ))}
     </div>
+  );
+};
+
+const MemoryListItem = ({ memory }: { memory: ListMemoryItem }) => {
+  const { session } = useAuth();
+  const isPrivateVariables = useMutationState<SetMemoryPrivacyArgs>({
+    filters: {
+      mutationKey: ["setMemoryPrivacy", memory.id],
+      status: "pending",
+    },
+    select: (mutation) => mutation.state.variables as SetMemoryPrivacyArgs,
+  });
+
+  const isPinnedVariables = useMutationState<PinMemoryArgs>({
+    filters: {
+      mutationKey: ["pinMemory", memory.id],
+      status: "pending",
+    },
+    select: (mutation) => mutation.state.variables as PinMemoryArgs,
+  });
+
+  const latestPrivateVariables =
+    isPrivateVariables[isPrivateVariables.length - 1];
+  const latestPinnedVariables = isPinnedVariables[isPinnedVariables.length - 1];
+  const isPrivate = latestPrivateVariables?.private_ ?? memory.private;
+  const isPinned = latestPinnedVariables?.pin ?? memory.pinned;
+  const titleText = `${session && isPinned ? "[pinned] " : ""} ${
+    session && isPrivate ? "[private] " : "[public] "
+  } ${formatDate(memory.created_at)}: ${memory.title}`;
+  return (
+    <Link
+      className="hover:opacity-80 cursor-pointer border-b border-dark-grey first:border-t"
+      to="/$memoryId"
+      params={{ memoryId: memory.id }}
+    >
+      <div className="mx-6 md:mx-8">{titleText}</div>
+    </Link>
   );
 };
