@@ -23,7 +23,8 @@
     "radix-ui": "latest",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "tailwindcss": "^4.1.6"
+    "tailwindcss": "^4.1.6",
+    "vaul": "^1.1.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.22.0",
