@@ -18,3 +18,13 @@
 .ql-editor a:hover {
     color: var(--color-link-hover);
 }
+
+[data-list="ordered"] {
+    list-style-position: inside;
+    list-style-type: decimal;
+}
+
+[data-list="bullet"] {
+    list-style-position: inside;
+    list-style-type: disc;
+}
