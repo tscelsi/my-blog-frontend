@@ -8,6 +8,7 @@ import {
 import { Memory } from "../../types";
 import { useIsSmallScreen } from "../../hooks/useIsSmallScreen";
 import { useAuth } from "../../hooks/useAuth";
+import clsx from "clsx";
 
 export const MemoryToolbar = ({
   memory,
@@ -48,7 +49,12 @@ export const MemoryToolbar = ({
   };
 
   return (
-    <div className="flex gap-3 border-b border-dark-grey py-1 px-6">
+    <div
+      className={clsx(
+        "flex gap-3 border-dark-grey px-6",
+        session && "py-1 border-b"
+      )}
+    >
       {isSmallScreen && (
         <Link to="/" className="w-fit">
           <button className="hover:opacity-80 cursor-pointer">

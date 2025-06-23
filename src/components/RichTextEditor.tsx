@@ -11,11 +11,11 @@ import {
 } from "react";
 import "../styles/rte.css";
 import {
-  ArrowEnterLeft20Filled,
-  TextBold20Filled,
-  TextItalic20Filled,
-  Checkmark20Filled,
-  Link20Filled,
+  ArrowEnterLeftFilled,
+  TextBold16Filled,
+  TextItalic16Filled,
+  Checkmark16Filled,
+  Link16Filled,
 } from "@fluentui/react-icons";
 import clsx from "clsx";
 
@@ -56,7 +56,10 @@ export const RichTextEditorToolbar = ({ quill }: { quill: Quill | null }) => {
     setLinkOpen(false);
   };
   return (
-    <div id="toolbar" className="gap-4 flex items-center">
+    <div
+      id="toolbar"
+      className="gap-2 flex items-center border-b border-dark-grey"
+    >
       <button
         type="button"
         className="hover:opacity-80 cursor-pointer"
@@ -69,7 +72,7 @@ export const RichTextEditorToolbar = ({ quill }: { quill: Quill | null }) => {
           }
         }}
       >
-        <TextBold20Filled />
+        <TextBold16Filled />
       </button>
       <button
         type="button"
@@ -83,7 +86,7 @@ export const RichTextEditorToolbar = ({ quill }: { quill: Quill | null }) => {
           }
         }}
       >
-        <TextItalic20Filled />
+        <TextItalic16Filled />
       </button>
       <Popover.Root open={linkOpen}>
         <Popover.Anchor asChild>
@@ -93,7 +96,7 @@ export const RichTextEditorToolbar = ({ quill }: { quill: Quill | null }) => {
             className="hover:opacity-80 cursor-pointer"
             aria-label="Insert link"
           >
-            <Link20Filled />
+            <Link16Filled />
           </button>
         </Popover.Anchor>
         <Popover.Content className="bg-bg p-2 rounded-md shadow-lg">
@@ -110,14 +113,14 @@ export const RichTextEditorToolbar = ({ quill }: { quill: Quill | null }) => {
               onClick={() => setLinkOpen(false)}
               className="hover:opacity-80 cursor-pointer"
             >
-              <ArrowEnterLeft20Filled />
+              <ArrowEnterLeftFilled />
             </button>
             <button
               type="button"
               onClick={handleLinkSubmit}
               className="hover:opacity-80 cursor-pointer"
             >
-              <Checkmark20Filled />
+              <Checkmark16Filled />
             </button>
           </div>
         </Popover.Content>
@@ -133,6 +136,9 @@ export const RichTextEditor = forwardRef(
   ) => {
     const containerRef = useRef<HTMLDivElement>(null);
     const onTextChangeRef = useRef(onTextChange);
+    const [localQuillInstance, setLocalQuillInstance] = useState<Quill | null>(
+      null
+    );
 
     useEffect(() => {
       if (ref && "current" in ref && ref.current) {
@@ -162,7 +168,10 @@ export const RichTextEditor = forwardRef(
     useEffect(() => {
       const container = containerRef.current;
       if (!container) return;
-      const quill = new Quill(container, {
+      const editorContainer = container.appendChild(
+        container.ownerDocument.createElement("div")
+      );
+      const quill = new Quill(editorContainer, {
         modules: {
           toolbar: {
             container: "#toolbar",
@@ -182,6 +191,7 @@ export const RichTextEditor = forwardRef(
         quill.setSelection(quill.getLength() - 1, 0);
       }
       if (setQuillInstance) setQuillInstance(quill);
+      setLocalQuillInstance(quill);
 
       return () => {
         setRef(ref, null);
@@ -190,16 +200,15 @@ export const RichTextEditor = forwardRef(
     }, [ref]);
 
     return (
-      <>
-        <div
-          spellCheck={false}
-          className={clsx(
-            "w-full h-full focus-within:border-light-grey",
-            !readOnly && "border border-dark-grey rounded-sm"
-          )}
-          ref={containerRef}
-        ></div>
-      </>
+      <div
+        className={clsx(
+          "w-full h-full focus-within:border-light-grey",
+          !readOnly && "border border-dark-grey rounded-sm"
+        )}
+      >
+        {!readOnly && <RichTextEditorToolbar quill={localQuillInstance} />}
+        <div spellCheck={false} ref={containerRef}></div>
+      </div>
     );
   }
 );
