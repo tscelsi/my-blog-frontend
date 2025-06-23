@@ -162,10 +162,7 @@ export const RichTextEditor = forwardRef(
     useEffect(() => {
       const container = containerRef.current;
       if (!container) return;
-      const editorContainer = container.appendChild(
-        container.ownerDocument.createElement("div")
-      );
-      const quill = new Quill(editorContainer, {
+      const quill = new Quill(container, {
         modules: {
           toolbar: {
             container: "#toolbar",
@@ -196,7 +193,10 @@ export const RichTextEditor = forwardRef(
       <>
         <div
           spellCheck={false}
-          className={clsx("w-full h-full", !readOnly && "border border-dark-grey rounded-sm")}
+          className={clsx(
+            "w-full h-full focus-within:border-light-grey",
+            !readOnly && "border border-dark-grey rounded-sm"
+          )}
           ref={containerRef}
         ></div>
       </>
