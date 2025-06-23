@@ -1,13 +1,14 @@
-export const formatDate = (date: string) => {
+export const formatDate = (date: string, includeTime: boolean = false) => {
   const d = new Date(date);
-  const options: Intl.DateTimeFormatOptions = {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  };
-  return d.toLocaleString("en-US", options);
+  const year = d.getFullYear();
+  const month = d.toLocaleString("default", { month: "short" });
+  const day = d.getDate();
+  if (includeTime) {
+    const hours = d.getHours().toString().padStart(2, "0");
+    const minutes = d.getMinutes().toString().padStart(2, "0");
+    return `${year}, ${day} ${month} ${hours}:${minutes}`;
+  }
+  return `${year}, ${day} ${month}`;
 };
 
 export const getCurrentYear = () => {

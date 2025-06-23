@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { Del } from "../../actions";
 import {
   useDeleteMemoryOrFragment,
@@ -6,6 +6,8 @@ import {
   useSetMemoryPrivacy,
 } from "../../memory_service";
 import { Memory } from "../../types";
+import { useIsSmallScreen } from "../../hooks/useIsSmallScreen";
+import { useAuth } from "../../hooks/useAuth";
 
 export const MemoryToolbar = ({
   memory,
@@ -17,11 +19,13 @@ export const MemoryToolbar = ({
   isEditing: boolean;
 }) => {
   const navigate = useNavigate();
+  const { session } = useAuth();
   const { mutateAsync: mutateMemoryPin, variables: pinVariables } =
     usePinMemory(memory.id);
   const deleteMutation = useDeleteMemoryOrFragment();
   const { mutateAsync: mutateMemoryPrivacy, variables: privacyVariables } =
     useSetMemoryPrivacy(memory.id);
+  const isSmallScreen = useIsSmallScreen();
 
   const handlePinClicked = () => {
     mutateMemoryPin({
@@ -44,7 +48,14 @@ export const MemoryToolbar = ({
   };
 
   return (
-    <>
+    <div className="flex gap-3 border-b border-dark-grey py-1 px-6">
+      {isSmallScreen && (
+        <Link to="/" className="w-fit">
+          <button className="hover:opacity-80 cursor-pointer">
+            <p>[back]</p>
+          </button>
+        </Link>
+      )}
       {isEditing &&
         (isPinned ? (
           <button
@@ -77,9 +88,11 @@ export const MemoryToolbar = ({
             <p>[make private]</p>
           </button>
         ))}
-      <p onClick={toggleEdit} className="cursor-pointer hover:opacity-80">
-        {isEditing ? "[done]" : "[edit]"}
-      </p>
+      {session && (
+        <p onClick={toggleEdit} className="cursor-pointer hover:opacity-80">
+          {isEditing ? "[done]" : "[edit]"}
+        </p>
+      )}
       {isEditing && (
         <Del
           onClick={async () => {
@@ -93,6 +106,6 @@ export const MemoryToolbar = ({
           }}
         />
       )}
-    </>
+    </div>
   );
 };

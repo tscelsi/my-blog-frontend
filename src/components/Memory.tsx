@@ -4,20 +4,15 @@ import { Reorder } from "motion/react";
 import { useUpdateMemory } from "../memory_service";
 import { Toolbar } from "./Toolbar/MainToolbar";
 import { Audio, Text, Image, File, RichText } from "./Fragment";
-import { Input } from "./inputs";
-import { formatDate } from "../utils/date_stuff";
 import { useAuth } from "../hooks/useAuth";
-import { useIsSmallScreen } from "../hooks/useIsSmallScreen";
-import { ArrowEnterLeft20Filled } from "@fluentui/react-icons";
-import { Link } from "@tanstack/react-router";
 import { MemoryToolbar } from "./Toolbar/MemoryToolbar";
+import { MemoryTitle } from "./MemoryTitle";
 
 export const Memory = ({ memory }: { memory: MemoryType }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [fragments, setFragments] = useState(memory.fragments);
   const [updatedMemoryTitle, setUpdatedMemoryTitle] = useState(memory.title);
   const updateOrderingMutation = useUpdateMemory(memory.id);
-  const isSmallScreen = useIsSmallScreen();
   const { session } = useAuth();
 
   useEffect(() => {
@@ -47,52 +42,22 @@ export const Memory = ({ memory }: { memory: MemoryType }) => {
 
   return (
     <div className="flex justify-center">
-      <div className="flex flex-col gap-4 z-2 w-4/5">
-        <div className="flex flex-col gap-2 mb-4">
-          {isSmallScreen && (
-            <Link to="/" className="w-fit">
-              <ArrowEnterLeft20Filled />
-            </Link>
-          )}
-          {isSmallScreen && (
-            <div className="flex gap-4">
-              {session && (
-                <MemoryToolbar
-                  memory={memory}
-                  isEditing={isEditing}
-                  toggleEdit={toggleEdit}
-                />
-              )}
-            </div>
-          )}
-          <div className="flex justify-between items-end gap-4 text-ellipsis overflow-hidden text-wrap">
-            <div className="flex gap-2 items-center">
-              {!isEditing ? (
-                <h3 className="text-2xl font-bold">{updatedMemoryTitle}</h3>
-              ) : (
-                <Input
-                  defaultValue={memory.title}
-                  onChange={(e) => {
-                    setUpdatedMemoryTitle(e.target.value);
-                  }}
-                />
-              )}
-            </div>
-            {!isSmallScreen && (
-              <div className="flex gap-4">
-                {session && (
-                  <MemoryToolbar
-                    memory={memory}
-                    isEditing={isEditing}
-                    toggleEdit={toggleEdit}
-                  />
-                )}
-              </div>
-            )}
-          </div>
-          <h6 className="font-bold">{formatDate(memory.created_at)}</h6>
+      <div className="flex flex-col z-2 w-full">
+        <div className="flex flex-col mb-4">
+          <MemoryToolbar
+            memory={memory}
+            isEditing={isEditing}
+            toggleEdit={toggleEdit}
+          />
+          <MemoryTitle
+            originalMemoryTitle={memory.title}
+            updatedMemoryTitle={updatedMemoryTitle}
+            setUpdatedMemoryTitle={setUpdatedMemoryTitle}
+            updatedAt={memory.updated_at}
+            isEditing={isEditing}
+          />
         </div>
-        <>
+        <div className="px-6">
           <Reorder.Group
             className="flex flex-col gap-4"
             axis="y"
@@ -142,7 +107,7 @@ export const Memory = ({ memory }: { memory: MemoryType }) => {
               </Reorder.Item>
             ))}
           </Reorder.Group>
-        </>
+        </div>
         {isEditing && (
           <div className="flex justify-center items-center">
             <Toolbar memory={memory} />

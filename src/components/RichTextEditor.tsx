@@ -17,6 +17,7 @@ import {
   Checkmark20Filled,
   Link20Filled,
 } from "@fluentui/react-icons";
+import clsx from "clsx";
 
 type EditorType = {
   readOnly: boolean;
@@ -195,7 +196,7 @@ export const RichTextEditor = forwardRef(
       <>
         <div
           spellCheck={false}
-          className="w-full h-full"
+          className={clsx("w-full h-full", !readOnly && "border border-dark-grey rounded-sm")}
           ref={containerRef}
         ></div>
       </>

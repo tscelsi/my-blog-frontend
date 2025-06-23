@@ -33,7 +33,7 @@ export function Layout() {
           <Menubar audioPlayerEnabled addMediaEnabled={session !== null} />
           <MemoryList memories={memories} />
         </div>
-        <div className="border-l border-light-grey"></div>
+        <div className="border-l border-dark-grey"></div>
         <div className="flex-2 pb-4">
           <Outlet />
         </div>

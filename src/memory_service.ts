@@ -75,6 +75,17 @@ export const useCreateMemoryFromFile = () => {
   return mutation;
 };
 
+export const useCreateEmptyMemory = () => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: async () => {
+      return await createAxiosClient().post("/memory");
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["memory"] }),
+  });
+  return mutation;
+};
+
 type CreateMemoryFromTextType = {
   data: { memory_title: string; text: string };
 };

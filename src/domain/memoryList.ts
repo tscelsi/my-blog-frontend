@@ -27,7 +27,7 @@ export class MemoryList {
 
   addNew() {
     const newMemory: ListMemoryItem = {
-      id: "newmemory_" + Date.now(),
+      id: crypto.randomUUID(),
       title: "blank_",
       created_at: new Date().toISOString(),
       pinned: false,

@@ -1,5 +1,6 @@
 import {
   useDeleteMemoryOrFragment,
+  useModifyRichTextFragment,
   useModifyTextFragment,
 } from "../memory_service";
 import type {
@@ -15,8 +16,9 @@ import { useAudio } from "../hooks/useAudio";
 import { useAuth } from "../hooks/useAuth";
 import { RichTextEditor } from "../components/RichTextEditor";
 import { useEffect, useRef, useState } from "react";
-import Quill, { Delta, Op } from "quill";
-import { TextDialog } from "./dialogs";
+import Quill, { Op } from "quill";
+import isEqual from "lodash.isequal";
+import debounce from "lodash.debounce";
 
 type FragmentBaseProps = {
   memory: MemoryType;
@@ -219,37 +221,53 @@ export const RichText = ({
   isEditing,
 }: RichTextFragmentProps) => {
   const quillRef = useRef<Quill>(null);
-  const [defaultContent, setDefaultContent] = useState<Op[]>(
-    fragment.content || []
-  );
+  const [defaultContent] = useState<Op[]>(fragment.content || []);
+
+  const deleteMutation = useDeleteMemoryOrFragment();
+  const modifyRichTextFragment = useModifyRichTextFragment();
+
+  // Store the latest fragment and memory in refs so the debounced function always has the latest values
+  const fragmentRef = useRef(fragment);
+  const memoryRef = useRef(memory);
 
   useEffect(() => {
-    setDefaultContent(fragment.content || []);
-    console.log("new fragment content...");
-    if (quillRef.current) {
-      console.log("setting quill content", fragment.content);
-      quillRef.current.setContents(new Delta(fragment.content || []));
-    } else {
-      console.warn("Quill instance is not set yet");
-    }
-  }, [fragment.content]);
-  const deleteMutation = useDeleteMemoryOrFragment();
-  const { session } = useAuth();
+    fragmentRef.current = fragment;
+    memoryRef.current = memory;
+  }, [fragment, memory]);
+
+  const debouncedMutateRef = useRef(
+    debounce(() => {
+      const quill = quillRef.current;
+      const currentFragment = fragmentRef.current;
+      const currentMemory = memoryRef.current;
+      if (!quill || !currentFragment || !currentMemory) return;
+      if (isEqual(quill.getContents().ops, currentFragment.content)) {
+        return;
+      }
+      modifyRichTextFragment.mutateAsync({
+        data: {
+          content: quill.getContents().ops || [],
+          memory_id: currentMemory.id,
+          fragment_id: currentFragment.id,
+        },
+      });
+    }, 700)
+  );
+
+  const handleTextChange = () => {
+    debouncedMutateRef.current();
+  };
 
   return (
     <div className="flex flex-col gap-3">
       <RichTextEditor
         ref={quillRef}
-        readOnly={true}
+        readOnly={!isEditing}
         defaultOps={defaultContent}
+        onTextChange={handleTextChange}
       ></RichTextEditor>
-      {session && isEditing && (
+      {isEditing && (
         <div className="flex items-center gap-4">
-          <TextDialog
-            memory_id={memory.id}
-            fragment={fragment}
-            button={<p className="cursor-pointer hover:opacity-80">[edit]</p>}
-          />
           <Del
             onClick={() => {
               deleteMutation.mutateAsync({
