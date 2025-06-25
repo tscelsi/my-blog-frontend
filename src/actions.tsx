@@ -1,15 +1,14 @@
+import { Button } from "./components/Button";
+
 type DelProps = {
   onClick: () => void;
 };
 
 export const Del = ({ onClick }: DelProps) => {
   return (
-    <div
-      className="cursor-pointer text-error hover:opacity-80 w-fit"
-      onClick={onClick}
-    >
-      <p>[del]</p>
-    </div>
+    <Button onClick={onClick} variant="destructive">
+      [del]
+    </Button>
   );
 };
 

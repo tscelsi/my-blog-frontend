@@ -64,9 +64,14 @@ export const FileDialog = ({ type, memory_id, button }: FileDialogProps) => {
       <Dialog.Trigger asChild>{button}</Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="z-100 bg-bg fixed inset-0 opacity-90" />
-        <Dialog.Content className="z-100 fixed top-1/2 left-1/2 w-1/2 p-6 rounded-md shadow-lg translate-x-[-50%] translate-y-[-50%]">
+        <Dialog.Content
+          className="z-100 fixed top-1/2 left-1/2 w-1/2 p-6 rounded-md shadow-lg translate-x-[-50%] translate-y-[-50%]"
+          aria-describedby="dialog-description"
+        >
           <VisuallyHidden.Root>
-            <Dialog.Title>Create a memory with a {type}.</Dialog.Title>
+            <Dialog.Title>
+              Choose a file of type {type} to add to your memory.
+            </Dialog.Title>
           </VisuallyHidden.Root>
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col items-center justify-center gap-4 w-full">

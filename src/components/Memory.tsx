@@ -1,44 +1,57 @@
 import { useEffect, useState } from "react";
 import { Reorder } from "motion/react";
-import { getMemoryQueryOptions, useUpdateMemory } from "../memory_service";
+import {
+  getMemoryQueryOptions,
+  useSetFragmentOrder,
+  useSetMemoryTitle,
+} from "../memory_service";
 import { Audio, Image, File, RichText } from "./Fragment";
-import { useAuth } from "../hooks/useAuth";
 import { MemoryToolbar } from "./Toolbar/MemoryToolbar";
-import { MemoryTitle } from "./MemoryTitle";
 import { useSuspenseQuery } from "@tanstack/react-query";
+import React from "react";
+import { Input } from "./inputs";
+import { formatDate } from "../utils/date_stuff";
+import debounce from "lodash.debounce";
+import { Fragment } from "../types";
 
 export const Memory = ({ memoryId }: { memoryId: string }) => {
   const { data: memory } = useSuspenseQuery(getMemoryQueryOptions(memoryId));
   const [isEditing, setIsEditing] = useState(false);
-  const [fragments, setFragments] = useState(memory.fragments);
-  const [updatedMemoryTitle, setUpdatedMemoryTitle] = useState(memory.title);
-  const updateOrderingMutation = useUpdateMemory(memory.id);
-  const { session } = useAuth();
+  const [orderedFragments, setOrderedFragments] = useState(memory.fragments);
+  const updateOrderingMutation = useSetFragmentOrder(memory.id);
+  const setMemoryTitleMutation = useSetMemoryTitle(memory.id);
 
   useEffect(() => {
-    setFragments(memory.fragments);
-    setUpdatedMemoryTitle(memory.title);
+    setOrderedFragments(memory.fragments);
   }, [memory]);
 
-  const toggleEdit = () => {
-    if (isEditing && session) {
-      if (
-        memory.fragments.map((f) => f.id).join(",") !==
-          fragments.map((f) => f.id).join(",") ||
-        memory.title !== updatedMemoryTitle
-      ) {
-        // about to close - update fragment ordering
-        updateOrderingMutation.mutateAsync({
-          memory_id: memory.id,
-          data: {
-            memory_title: updatedMemoryTitle,
-            fragment_ids: fragments.map((fragment) => fragment.id),
-          },
-        });
-      }
-    }
+  const handleTitleUpdate = React.useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      if (memory.title === e.target.value) return;
+      setMemoryTitleMutation.mutateAsync({
+        memory_id: memory.id,
+        data: {
+          memory_title: e.target.value,
+        },
+      });
+    },
+    []
+  );
+
+  const handleFragmentReorder = React.useCallback((fragments: Fragment[]) => {
+    const newOrder = fragments.map((fragment) => fragment.id);
+    setOrderedFragments(fragments);
+    updateOrderingMutation.mutateAsync({
+      memory_id: memory.id,
+      data: {
+        fragment_ids: newOrder,
+      },
+    });
+  }, []);
+
+  const toggleEdit = React.useCallback(() => {
     setIsEditing(!isEditing);
-  };
+  }, [isEditing]);
 
   return (
     <div className="flex justify-center">
@@ -49,22 +62,28 @@ export const Memory = ({ memoryId }: { memoryId: string }) => {
             isEditing={isEditing}
             toggleEdit={toggleEdit}
           />
-          <MemoryTitle
-            originalMemoryTitle={memory.title}
-            updatedMemoryTitle={updatedMemoryTitle}
-            setUpdatedMemoryTitle={setUpdatedMemoryTitle}
-            updatedAt={memory.updated_at}
-            isEditing={isEditing}
-          />
+          <div className="border-b border-dark-grey py-2 px-6">
+            <div>
+              {!isEditing ? (
+                <h3 className="text-2xl font-bold">{memory.title}</h3>
+              ) : (
+                <Input
+                  defaultValue={memory.title}
+                  onChange={debounce(handleTitleUpdate, 700)}
+                />
+              )}
+            </div>
+            <h6>last updated: {formatDate(memory.updated_at, true)}</h6>
+          </div>
         </div>
         <div className="px-6">
           <Reorder.Group
             className="flex flex-col gap-4"
             axis="y"
-            values={fragments}
-            onReorder={setFragments}
+            values={orderedFragments}
+            onReorder={handleFragmentReorder}
           >
-            {fragments.map((item) => (
+            {orderedFragments.map((item) => (
               <Reorder.Item key={item.id} value={item} drag={isEditing}>
                 {item.type === "audio" ? (
                   <Audio

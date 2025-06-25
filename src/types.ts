@@ -20,11 +20,13 @@ export interface FileFragment extends BaseFragment {
   status: "uploading" | "uploaded" | "error";
 }
 
+export type Fragment = FileFragment | RichTextFragment;
+
 export interface Memory {
   id: string;
   user_id: string;
   title: string;
-  fragments: (FileFragment | RichTextFragment)[];
+  fragments: Fragment[];
   private: boolean;
   pinned: boolean;
   tags: string[];
@@ -36,3 +38,5 @@ export type ListMemoryItem = Pick<
   Memory,
   "id" | "title" | "pinned" | "private" | "created_at"
 >;
+
+export type Tag = "music" | "software" | "thoughts" | "photos";

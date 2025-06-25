@@ -10,6 +10,7 @@ import { useIsSmallScreen } from "../../hooks/useIsSmallScreen";
 import { useAuth } from "../../hooks/useAuth";
 import clsx from "clsx";
 import { AddFragmentButton } from "./Drawer";
+import { Button } from "../Button";
 
 export const MemoryToolbar = ({
   memory,
@@ -53,53 +54,39 @@ export const MemoryToolbar = ({
     <div
       className={clsx(
         "flex gap-3 border-dark-grey px-6",
-        session && "py-1 border-b"
+        session && "border-b py-1",
+        isSmallScreen && "border-b"
       )}
     >
       {isSmallScreen && (
         <Link to="/" className="w-fit">
-          <button className="hover:opacity-80 cursor-pointer">
-            <p>[back]</p>
-          </button>
+          <Button>[back]</Button>
         </Link>
       )}
       {isEditing && <AddFragmentButton memory={memory} />}
       {isEditing &&
         (isPinned ? (
-          <button
-            onClick={handlePinClicked}
-            className="hover:opacity-80 cursor-pointer"
-          >
-            <p>[unpin]</p>
-          </button>
+          <Button isSelected onClick={handlePinClicked}>
+            [unpin]
+          </Button>
         ) : (
-          <button
-            onClick={handlePinClicked}
-            className="hover:opacity-80 cursor-pointer"
-          >
-            <p>[pin]</p>
-          </button>
+          <Button onClick={handlePinClicked}>[pin]</Button>
         ))}
       {isEditing &&
         (isPrivate ? (
-          <button
-            onClick={togglePrivatePublic}
-            className="hover:opacity-80 cursor-pointer"
-          >
-            <p>[make public]</p>
-          </button>
+          <Button onClick={togglePrivatePublic}>[make public]</Button>
         ) : (
-          <button
-            onClick={togglePrivatePublic}
-            className="hover:opacity-80 cursor-pointer"
-          >
-            <p>[make private]</p>
-          </button>
+          <Button isSelected onClick={togglePrivatePublic}>
+            [make private]
+          </Button>
         ))}
       {session && (
-        <p onClick={toggleEdit} className="cursor-pointer hover:opacity-80">
+        <Button
+          onClick={toggleEdit}
+          className="cursor-pointer hover:opacity-80"
+        >
           {isEditing ? "[done]" : "[edit]"}
-        </p>
+        </Button>
       )}
       {isEditing && (
         <Del

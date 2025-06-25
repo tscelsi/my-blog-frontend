@@ -180,20 +180,41 @@ export const useModifyRichTextFragment = () => {
   return mutation;
 };
 
-type UpdateMemoryType = {
+type SetMemoryTitleType = {
   memory_id: string;
   data: {
-    fragment_ids: string[];
     memory_title: string;
   };
 };
 
-export const useUpdateMemory = (memory_id: string) => {
+export const useSetMemoryTitle = (memory_id: string) => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
-    mutationFn: async (options: UpdateMemoryType) => {
-      return await createAxiosClient().post(
-        `/memory/${options.memory_id}/update`,
+    mutationFn: async (options: SetMemoryTitleType) => {
+      return await createAxiosClient().put(
+        `/memory/${options.memory_id}/set-memory-title`,
+        options.data
+      );
+    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["memory", memory_id] }),
+  });
+  return mutation;
+};
+
+type SetFragmentOrderType = {
+  memory_id: string;
+  data: {
+    fragment_ids: string[];
+  };
+};
+
+export const useSetFragmentOrder = (memory_id: string) => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: async (options: SetFragmentOrderType) => {
+      return await createAxiosClient().put(
+        `/memory/${options.memory_id}/set-fragment-order`,
         options.data
       );
     },
