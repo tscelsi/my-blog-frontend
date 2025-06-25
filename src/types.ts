@@ -1,17 +1,11 @@
 import { Op } from "quill";
 
 export type FileType = "file" | "audio" | "image";
-export type MediaType = "text" | "rich_text" | FileType;
+export type MediaType = "rich_text" | FileType;
 
 export interface BaseFragment {
   type: MediaType;
   id: string;
-}
-
-export interface TextFragment extends BaseFragment {
-  type: "text";
-  content: string;
-  href: string | null;
 }
 
 export interface RichTextFragment extends BaseFragment {
@@ -30,7 +24,7 @@ export interface Memory {
   id: string;
   user_id: string;
   title: string;
-  fragments: (FileFragment | TextFragment | RichTextFragment)[];
+  fragments: (FileFragment | RichTextFragment)[];
   private: boolean;
   pinned: boolean;
   tags: string[];

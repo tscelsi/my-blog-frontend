@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { Menubar } from "../components/Toolbar/Menubar";
 import { Memory } from "../components/Memory";
 import { getMemoryQueryOptions } from "../memory_service";
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { useIsSmallScreen } from "../hooks/useIsSmallScreen";
 import { Footer } from "../components/Footer";
 import { Loader } from "../components/Loader";
@@ -19,7 +18,6 @@ export const Route = createFileRoute("/_layout/$memoryId")({
 
 export function MemoryPage() {
   const memoryId = Route.useParams().memoryId;
-  const { data: memory } = useSuspenseQuery(getMemoryQueryOptions(memoryId));
   const isSmallScreen = useIsSmallScreen();
 
   return (
@@ -27,7 +25,7 @@ export function MemoryPage() {
       {/* a blank menu bar to pad */}
       <Menubar audioPlayerEnabled={isSmallScreen} />
       <div className="flex-1 pb-4">
-        <Memory memory={memory} />
+        <Memory memoryId={memoryId} />
       </div>
       {isSmallScreen && <Footer />}
     </div>

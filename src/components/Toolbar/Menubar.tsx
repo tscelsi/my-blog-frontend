@@ -1,6 +1,6 @@
 import { AudioPlayer } from "../AudioPlayer";
 import clsx from "clsx";
-import { Toolbar } from "./MainToolbar";
+import { CreateMemoryButton } from "./CreateMemoryButton";
 
 type MenubarProps = {
   addMediaEnabled?: boolean;
@@ -19,7 +19,7 @@ export const Menubar = ({
       )}
     >
       {audioPlayerEnabled && <AudioPlayer />}
-      {addMediaEnabled && <Toolbar />}
+      {addMediaEnabled && <CreateMemoryButton />}
     </div>
   );
 };

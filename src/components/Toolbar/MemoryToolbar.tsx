@@ -9,6 +9,7 @@ import { Memory } from "../../types";
 import { useIsSmallScreen } from "../../hooks/useIsSmallScreen";
 import { useAuth } from "../../hooks/useAuth";
 import clsx from "clsx";
+import { AddFragmentButton } from "./Drawer";
 
 export const MemoryToolbar = ({
   memory,
@@ -62,6 +63,7 @@ export const MemoryToolbar = ({
           </button>
         </Link>
       )}
+      {isEditing && <AddFragmentButton memory={memory} />}
       {isEditing &&
         (isPinned ? (
           <button

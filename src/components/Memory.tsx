@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
-import { type Memory as MemoryType } from "../types";
 import { Reorder } from "motion/react";
-import { useUpdateMemory } from "../memory_service";
-import { Toolbar } from "./Toolbar/MainToolbar";
-import { Audio, Text, Image, File, RichText } from "./Fragment";
+import { getMemoryQueryOptions, useUpdateMemory } from "../memory_service";
+import { Audio, Image, File, RichText } from "./Fragment";
 import { useAuth } from "../hooks/useAuth";
 import { MemoryToolbar } from "./Toolbar/MemoryToolbar";
 import { MemoryTitle } from "./MemoryTitle";
+import { useSuspenseQuery } from "@tanstack/react-query";
 
-export const Memory = ({ memory }: { memory: MemoryType }) => {
+export const Memory = ({ memoryId }: { memoryId: string }) => {
+  const { data: memory } = useSuspenseQuery(getMemoryQueryOptions(memoryId));
   const [isEditing, setIsEditing] = useState(false);
   const [fragments, setFragments] = useState(memory.fragments);
   const [updatedMemoryTitle, setUpdatedMemoryTitle] = useState(memory.title);
@@ -66,14 +66,7 @@ export const Memory = ({ memory }: { memory: MemoryType }) => {
           >
             {fragments.map((item) => (
               <Reorder.Item key={item.id} value={item} drag={isEditing}>
-                {item.type === "text" ? (
-                  <Text
-                    key={item.id}
-                    memory={memory}
-                    fragment={item}
-                    isEditing={isEditing}
-                  />
-                ) : item.type === "audio" ? (
+                {item.type === "audio" ? (
                   <Audio
                     key={item.id}
                     memory={memory}
@@ -108,11 +101,6 @@ export const Memory = ({ memory }: { memory: MemoryType }) => {
             ))}
           </Reorder.Group>
         </div>
-        {isEditing && (
-          <div className="flex justify-center items-center">
-            <Toolbar memory={memory} />
-          </div>
-        )}
       </div>
     </div>
   );

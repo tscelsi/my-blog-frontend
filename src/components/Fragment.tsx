@@ -1,17 +1,14 @@
 import {
   useDeleteMemoryOrFragment,
   useModifyRichTextFragment,
-  useModifyTextFragment,
 } from "../memory_service";
 import type {
   FileFragment,
   Memory as MemoryType,
   RichTextFragment,
-  TextFragment,
 } from "../types";
 import { Play16Filled, Pause16Filled } from "@fluentui/react-icons";
 import { Del, Download } from "../actions";
-import { TextArea } from "./inputs";
 import { useAudio } from "../hooks/useAudio";
 import { useAuth } from "../hooks/useAuth";
 import { RichTextEditor } from "../components/RichTextEditor";
@@ -27,10 +24,6 @@ type FragmentBaseProps = {
 
 type FileFragmentProps = {
   fragment: FileFragment;
-} & FragmentBaseProps;
-
-type TextFragmentProps = {
-  fragment: TextFragment;
 } & FragmentBaseProps;
 
 type RichTextFragmentProps = {
@@ -166,55 +159,6 @@ export const Image = ({ memory, fragment, isEditing }: FileFragmentProps) => {
   );
 };
 
-export const Text = ({ fragment, isEditing, memory }: TextFragmentProps) => {
-  const modifyMutation = useModifyTextFragment();
-  const deleteMutation = useDeleteMemoryOrFragment();
-  const { session } = useAuth();
-  const handleBlur = (event: React.FocusEvent<HTMLTextAreaElement>) => {
-    const newValue = event.target.value;
-    if (!session) {
-      console.error("No session");
-      return;
-    }
-    if (newValue === fragment.content) {
-      return;
-    } else {
-      modifyMutation.mutateAsync({
-        data: {
-          memory_id: memory.id,
-          fragment_id: fragment.id,
-          text: newValue,
-        },
-      });
-    }
-  };
-  return (
-    <div className="w-full">
-      {fragment.href ? (
-        <a href={fragment.href} target="_blank" rel="noopener noreferrer">
-          {fragment.content}
-        </a>
-      ) : !isEditing ? (
-        <p>{fragment.content}</p>
-      ) : (
-        <div>
-          <TextArea onBlur={handleBlur} defaultValue={fragment.content} />
-          {session && (
-            <Del
-              onClick={() => {
-                deleteMutation.mutateAsync({
-                  memory_id: memory.id,
-                  fragment_ids: [fragment.id],
-                });
-              }}
-            />
-          )}
-        </div>
-      )}
-    </div>
-  );
-};
-
 export const RichText = ({
   fragment,
   memory,
@@ -259,7 +203,7 @@ export const RichText = ({
   };
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-3" data-fragment-id={fragment.id}>
       <RichTextEditor
         ref={quillRef}
         readOnly={!isEditing}

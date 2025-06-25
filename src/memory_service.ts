@@ -79,7 +79,7 @@ export const useCreateEmptyMemory = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async () => {
-      return await createAxiosClient().post("/memory");
+      return await createAxiosClient().post<{ id: string }>("/memory");
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["memory"] }),
   });
@@ -143,59 +143,21 @@ export const useAddFileFragmentToMemory = () => {
   return mutation;
 };
 
-type AddTextFragmentToMemoryType = {
-  data: { text: string; memory_id: string };
-};
-
-export const useAddTextFragmentToMemory = () => {
-  const queryClient = useQueryClient();
-  const mutation = useMutation({
-    mutationFn: async (args: AddTextFragmentToMemoryType) => {
-      return await createAxiosClient().post("/fragment/add-text", args.data);
-    },
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["memory"] });
-    },
-  });
-  return mutation;
-};
-
-type ModifyTextFragmentType = {
-  data: { text: string; memory_id: string; fragment_id: string };
-};
-
-export const useModifyTextFragment = () => {
-  const queryClient = useQueryClient();
-  const mutation = useMutation({
-    mutationFn: async (args: ModifyTextFragmentType) => {
-      return await createAxiosClient().post("/fragment/modify-text", args.data);
-    },
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["memory"] });
-    },
-  });
-  return mutation;
-};
-
 type AddRichTextFragmentToMemoryType = {
   data: { content: Op[]; memory_id: string };
 };
 
-export const useAddRichTextFragmentToMemory = () => {
+export const useAddRichTextFragmentToMemory = (memoryId: string) => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (args: AddRichTextFragmentToMemoryType) => {
-      return await createAxiosClient().post(
+      return (await createAxiosClient().post)<{ fragment_id: string }>(
         "/fragment/add-rich-text",
         args.data
       );
     },
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["memory"] });
-    },
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["memory", memoryId] }),
   });
   return mutation;
 };
@@ -213,11 +175,7 @@ export const useModifyRichTextFragment = () => {
         args.data
       );
     },
-    onSuccess: () => {
-      // Invalidate and refetch
-      console.log("Modified rich text fragment successfully");
-      queryClient.invalidateQueries({ queryKey: ["memory"] });
-    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["memory"] }),
   });
   return mutation;
 };
