@@ -34,7 +34,7 @@ export function Layout() {
           <MemoryList memories={memories} />
         </div>
         <div className="border-l border-dark-grey"></div>
-        <div className="flex-2 pb-4">
+        <div className="flex-2 max-w-2/3 pb-4">
           <Outlet />
         </div>
       </div>

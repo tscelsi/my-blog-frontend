@@ -187,7 +187,7 @@ type SetMemoryTitleType = {
   };
 };
 
-export const useSetMemoryTitle = (memory_id: string) => {
+export const useSetMemoryTitle = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (options: SetMemoryTitleType) => {
@@ -196,8 +196,14 @@ export const useSetMemoryTitle = (memory_id: string) => {
         options.data
       );
     },
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["memory", memory_id] }),
+    onSuccess: (_res, variables) => {
+      queryClient.invalidateQueries({
+        queryKey: ["memory", variables.memory_id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["memory"],
+      });
+    },
   });
   return mutation;
 };
@@ -209,7 +215,7 @@ type SetFragmentOrderType = {
   };
 };
 
-export const useSetFragmentOrder = (memory_id: string) => {
+export const useSetFragmentOrder = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (options: SetFragmentOrderType) => {
@@ -218,10 +224,10 @@ export const useSetFragmentOrder = (memory_id: string) => {
         options.data
       );
     },
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["memory", memory_id] });
-    },
+    onSuccess: (_res, variables) =>
+      queryClient.invalidateQueries({
+        queryKey: ["memory", variables.memory_id],
+      }),
   });
   return mutation;
 };

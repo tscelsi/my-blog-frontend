@@ -78,11 +78,15 @@ const Item = ({
 };
 
 export const Memory = ({ memoryId }: { memoryId: string }) => {
-  const { data: memory } = useSuspenseQuery(getMemoryQueryOptions(memoryId));
+  const options = React.useMemo(
+    () => getMemoryQueryOptions(memoryId),
+    [memoryId]
+  );
+  const { data: memory } = useSuspenseQuery(options);
   const [isEditing, setIsEditing] = useState(false);
   const [orderedFragments, setOrderedFragments] = useState(memory.fragments);
-  const updateOrderingMutation = useSetFragmentOrder(memory.id);
-  const setMemoryTitleMutation = useSetMemoryTitle(memory.id);
+  const updateOrderingMutation = useSetFragmentOrder();
+  const setMemoryTitleMutation = useSetMemoryTitle();
 
   useEffect(() => {
     setOrderedFragments(memory.fragments);
@@ -98,19 +102,22 @@ export const Memory = ({ memoryId }: { memoryId: string }) => {
         },
       });
     },
-    []
+    [memory.title, memory.id, setMemoryTitleMutation]
   );
 
-  const handleFragmentReorder = React.useCallback((fragments: Fragment[]) => {
-    const newOrder = fragments.map((fragment) => fragment.id);
-    setOrderedFragments(fragments);
-    updateOrderingMutation.mutateAsync({
-      memory_id: memory.id,
-      data: {
-        fragment_ids: newOrder,
-      },
-    });
-  }, []);
+  const handleFragmentReorder = React.useCallback(
+    (fragments: Fragment[]) => {
+      const newOrder = fragments.map((fragment) => fragment.id);
+      setOrderedFragments(fragments);
+      updateOrderingMutation.mutateAsync({
+        memory_id: memory.id,
+        data: {
+          fragment_ids: newOrder,
+        },
+      });
+    },
+    [memory.id, updateOrderingMutation]
+  );
 
   const toggleEdit = React.useCallback(() => {
     setIsEditing(!isEditing);
