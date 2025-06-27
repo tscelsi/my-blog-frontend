@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useEffect, useState } from "react";
 import { Reorder, useDragControls } from "motion/react";
 import {
@@ -95,13 +95,14 @@ export const Memory = ({ memoryId }: { memoryId: string }) => {
   }, [memory.title]);
 
   const handleTitleUpdate = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      if (title === e.target.value) return;
-      setTitle(e.target.value);
+    (e: React.FormEvent<HTMLHeadingElement>) => {
+      const target = e.target as HTMLElement;
+      if (title === target.innerText) return;
+      setTitle(target.innerText);
       setMemoryTitleMutation.mutateAsync({
         memory_id: memory.id,
         data: {
-          memory_title: e.target.value,
+          memory_title: target.innerText,
         },
       });
     },
@@ -143,7 +144,8 @@ export const Memory = ({ memoryId }: { memoryId: string }) => {
                   isEditing && "border border-light-grey rounded-sm"
                 )}
                 contentEditable={isEditing}
-                onChange={debounce(handleTitleUpdate, 400)}
+                suppressContentEditableWarning={true}
+                onInput={debounce(handleTitleUpdate, 500)}
               >
                 {title}
               </h3>
