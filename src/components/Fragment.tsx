@@ -52,7 +52,7 @@ export const File = ({ fragment, memory, isEditing }: FileFragmentProps) => {
   const isUploading = fragment.status === "uploading";
   const { session } = useAuth();
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-4" data-fragment-id={fragment.id}>
       <p>{fragment.name}</p>
       {!isEditing && !isUploading && <Download url={fileUrl} />}
       {isEditing && !isUploading && session && (
@@ -92,7 +92,7 @@ export const Audio = ({ memory, fragment, isEditing }: FileFragmentProps) => {
   // Sync play/pause state with audio element
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3" data-fragment-id={fragment.id}>
       <button
         type="button"
         onClick={handlePlayPause}
@@ -136,7 +136,10 @@ export const Image = ({ memory, fragment, isEditing }: FileFragmentProps) => {
   const deleteMutation = useDeleteMemoryOrFragment();
   const { session } = useAuth();
   return (
-    <div className="flex flex-col gap-3 max-w-xl">
+    <div
+      className="flex flex-col gap-3 max-w-xl"
+      data-fragment-id={fragment.id}
+    >
       <img
         className="object-contain rounded-sm"
         src={imageUrl}

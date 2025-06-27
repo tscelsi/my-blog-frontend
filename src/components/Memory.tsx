@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Reorder } from "motion/react";
+import { Reorder, useDragControls } from "motion/react";
 import {
   getMemoryQueryOptions,
   useSetFragmentOrder,
@@ -12,7 +12,70 @@ import React from "react";
 import { Input } from "./inputs";
 import { formatDate } from "../utils/date_stuff";
 import debounce from "lodash.debounce";
-import { Fragment } from "../types";
+import { Fragment, Memory as MemoryType } from "../types";
+import { ReOrderDotsVertical16Filled } from "@fluentui/react-icons";
+
+const Item = ({
+  memory,
+  fragment,
+  isEditing,
+}: {
+  memory: MemoryType;
+  fragment: Fragment;
+  isEditing: boolean;
+}) => {
+  const controls = useDragControls();
+  return (
+    <Reorder.Item
+      key={fragment.id}
+      value={fragment}
+      dragListener={false}
+      dragControls={controls}
+    >
+      <div className="flex gap-1">
+        {isEditing && (
+          <ReOrderDotsVertical16Filled
+            className="cursor-grab hover:opacity-80"
+            onPointerDown={(e) => controls.start(e)}
+          />
+        )}
+        <div className="flex-1">
+          {fragment.type === "audio" ? (
+            <Audio
+              key={fragment.id}
+              memory={memory}
+              fragment={fragment}
+              isEditing={isEditing}
+            />
+          ) : fragment.type === "image" ? (
+            <Image
+              key={fragment.id}
+              memory={memory}
+              fragment={fragment}
+              isEditing={isEditing}
+            />
+          ) : fragment.type === "file" ? (
+            <File
+              key={fragment.id}
+              memory={memory}
+              fragment={fragment}
+              isEditing={isEditing}
+            />
+          ) : fragment.type === "rich_text" ? (
+            <RichText
+              key={fragment.id}
+              fragment={fragment}
+              memory={memory}
+              isEditing={isEditing}
+            />
+          ) : (
+            <p>unknown frag.</p>
+          )}
+        </div>
+      </div>
+    </Reorder.Item>
+  );
+};
 
 export const Memory = ({ memoryId }: { memoryId: string }) => {
   const { data: memory } = useSuspenseQuery(getMemoryQueryOptions(memoryId));
@@ -84,39 +147,12 @@ export const Memory = ({ memoryId }: { memoryId: string }) => {
             onReorder={handleFragmentReorder}
           >
             {orderedFragments.map((item) => (
-              <Reorder.Item key={item.id} value={item} drag={isEditing}>
-                {item.type === "audio" ? (
-                  <Audio
-                    key={item.id}
-                    memory={memory}
-                    fragment={item}
-                    isEditing={isEditing}
-                  />
-                ) : item.type === "image" ? (
-                  <Image
-                    key={item.id}
-                    memory={memory}
-                    fragment={item}
-                    isEditing={isEditing}
-                  />
-                ) : item.type === "file" ? (
-                  <File
-                    key={item.id}
-                    memory={memory}
-                    fragment={item}
-                    isEditing={isEditing}
-                  />
-                ) : item.type === "rich_text" ? (
-                  <RichText
-                    key={item.id}
-                    fragment={item}
-                    memory={memory}
-                    isEditing={isEditing}
-                  />
-                ) : (
-                  <p>unknown frag.</p>
-                )}
-              </Reorder.Item>
+              <Item
+                memory={memory}
+                fragment={item}
+                isEditing={isEditing}
+                key={item.id}
+              />
             ))}
           </Reorder.Group>
         </div>
