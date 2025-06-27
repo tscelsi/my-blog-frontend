@@ -1,3 +1,4 @@
+import { ChangeEvent, useCallback, useMemo } from "react";
 import { useEffect, useState } from "react";
 import { Reorder, useDragControls } from "motion/react";
 import {
@@ -8,12 +9,11 @@ import {
 import { Audio, Image, File, RichText } from "./Fragment";
 import { MemoryToolbar } from "./Toolbar/MemoryToolbar";
 import { useSuspenseQuery } from "@tanstack/react-query";
-import React from "react";
-import { Input } from "./inputs";
 import { formatDate } from "../utils/date_stuff";
 import debounce from "lodash.debounce";
 import { Fragment, Memory as MemoryType } from "../types";
 import { ReOrderDotsVertical16Filled } from "@fluentui/react-icons";
+import clsx from "clsx";
 
 const Item = ({
   memory,
@@ -78,13 +78,11 @@ const Item = ({
 };
 
 export const Memory = ({ memoryId }: { memoryId: string }) => {
-  const options = React.useMemo(
-    () => getMemoryQueryOptions(memoryId),
-    [memoryId]
-  );
+  const options = useMemo(() => getMemoryQueryOptions(memoryId), [memoryId]);
   const { data: memory } = useSuspenseQuery(options);
   const [isEditing, setIsEditing] = useState(false);
   const [orderedFragments, setOrderedFragments] = useState(memory.fragments);
+  const [title, setTitle] = useState(memory.title);
   const updateOrderingMutation = useSetFragmentOrder();
   const setMemoryTitleMutation = useSetMemoryTitle();
 
@@ -92,9 +90,14 @@ export const Memory = ({ memoryId }: { memoryId: string }) => {
     setOrderedFragments(memory.fragments);
   }, [memory]);
 
-  const handleTitleUpdate = React.useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (memory.title === e.target.value) return;
+  useEffect(() => {
+    setTitle(memory.title);
+  }, [memory.title]);
+
+  const handleTitleUpdate = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      if (title === e.target.value) return;
+      setTitle(e.target.value);
       setMemoryTitleMutation.mutateAsync({
         memory_id: memory.id,
         data: {
@@ -102,10 +105,10 @@ export const Memory = ({ memoryId }: { memoryId: string }) => {
         },
       });
     },
-    [memory.title, memory.id, setMemoryTitleMutation]
+    [title, memory.id, setMemoryTitleMutation]
   );
 
-  const handleFragmentReorder = React.useCallback(
+  const handleFragmentReorder = useCallback(
     (fragments: Fragment[]) => {
       const newOrder = fragments.map((fragment) => fragment.id);
       setOrderedFragments(fragments);
@@ -119,13 +122,13 @@ export const Memory = ({ memoryId }: { memoryId: string }) => {
     [memory.id, updateOrderingMutation]
   );
 
-  const toggleEdit = React.useCallback(() => {
+  const toggleEdit = useCallback(() => {
     setIsEditing(!isEditing);
   }, [isEditing]);
 
   return (
     <div className="flex justify-center">
-      <div className="flex flex-col z-2 w-full">
+      <div className="flex flex-col w-full">
         <div className="flex flex-col mb-4">
           <MemoryToolbar
             memory={memory}
@@ -134,14 +137,16 @@ export const Memory = ({ memoryId }: { memoryId: string }) => {
           />
           <div className="border-b border-dark-grey py-2 px-6">
             <div>
-              {!isEditing ? (
-                <h3 className="text-2xl font-bold">{memory.title}</h3>
-              ) : (
-                <Input
-                  defaultValue={memory.title}
-                  onChange={debounce(handleTitleUpdate, 700)}
-                />
-              )}
+              <h3
+                className={clsx(
+                  "text-2xl font-bold",
+                  isEditing && "border border-light-grey rounded-sm"
+                )}
+                contentEditable={isEditing}
+                onChange={debounce(handleTitleUpdate, 400)}
+              >
+                {title}
+              </h3>
             </div>
             <h6>last updated: {formatDate(memory.updated_at, true)}</h6>
           </div>

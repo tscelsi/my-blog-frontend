@@ -10,12 +10,14 @@ import {
 import { useAddRichTextFragmentToMemory } from "../../memory_service";
 import clsx from "clsx";
 import { useState } from "react";
+import { Button } from "../Button";
 
 type ToolbarProps = {
   memory: Memory;
+  trigger?: React.ReactNode;
 };
 
-export const AddFragmentButton = ({ memory }: ToolbarProps) => {
+export const AddFragmentButton = ({ memory, trigger }: ToolbarProps) => {
   const [open, setOpen] = useState(false);
   const addRichTextMutation = useAddRichTextFragmentToMemory(memory.id);
 
@@ -35,7 +37,7 @@ export const AddFragmentButton = ({ memory }: ToolbarProps) => {
   return (
     <Drawer.Root open={open} onOpenChange={setOpen}>
       <Drawer.Trigger asChild>
-        <button className="cursor-pointer hover:opacity-80">[add]</button>
+        {trigger ? trigger : <Button className="text-start">[add]</Button>}
       </Drawer.Trigger>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 bg-dark-grey/10" />

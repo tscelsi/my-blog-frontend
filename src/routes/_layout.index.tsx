@@ -37,7 +37,7 @@ function HomePage() {
         <div className="flex-1">
           <Menubar />
           <div className="flex justify-center">
-            <div className="flex flex-col gap-4 z-2 w-4/5">
+            <div className="flex flex-col gap-4 w-4/5">
               <p className="opacity-40">{"<blank>"}</p>
             </div>
           </div>

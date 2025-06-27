@@ -9,8 +9,9 @@ import { Memory } from "../../types";
 import { useIsSmallScreen } from "../../hooks/useIsSmallScreen";
 import { useAuth } from "../../hooks/useAuth";
 import clsx from "clsx";
-import { AddFragmentButton } from "./Drawer";
+import { AddFragmentButton } from "./AddFragmentButton";
 import { Button } from "../Button";
+import { EditActions } from "../EditActions";
 
 export const MemoryToolbar = ({
   memory,
@@ -49,7 +50,32 @@ export const MemoryToolbar = ({
       console.error("Error toggling privacy:", error);
     });
   };
-
+  if (isSmallScreen) {
+    return (
+      <div
+        className={clsx(
+          "flex justify-between gap-3 border-dark-grey px-6",
+          session && "border-b py-1",
+          isSmallScreen && "border-b"
+        )}
+      >
+        <div className="flex gap-2">
+          <Link to="/" className="w-fit">
+            <Button>[back]</Button>
+          </Link>
+          {session && (
+            <Button
+              onClick={toggleEdit}
+              className="cursor-pointer hover:opacity-80"
+            >
+              {isEditing ? "[done]" : "[edit]"}
+            </Button>
+          )}
+        </div>
+        {isEditing && <EditActions memory={memory} />}
+      </div>
+    );
+  }
   return (
     <div
       className={clsx(
@@ -59,9 +85,11 @@ export const MemoryToolbar = ({
       )}
     >
       {isSmallScreen && (
-        <Link to="/" className="w-fit">
-          <Button>[back]</Button>
-        </Link>
+        <>
+          <Link to="/" className="w-fit">
+            <Button>[back]</Button>
+          </Link>
+        </>
       )}
       {isEditing && <AddFragmentButton memory={memory} />}
       {isEditing &&

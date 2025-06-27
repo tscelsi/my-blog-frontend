@@ -4,6 +4,7 @@ import { ListMemoryItem } from "../types";
 import { useAuth } from "../hooks/useAuth";
 import { PinMemoryArgs, SetMemoryPrivacyArgs } from "../memory_service";
 import { useMutationState } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 type MemoryListProps = {
   memories: ListMemoryItem[];
@@ -42,15 +43,18 @@ const MemoryListItem = ({ memory }: { memory: ListMemoryItem }) => {
   const latestPinnedVariables = isPinnedVariables[isPinnedVariables.length - 1];
   const isPrivate = latestPrivateVariables?.private_ ?? memory.private;
   const isPinned = latestPinnedVariables?.pin ?? memory.pinned;
-  let titleText;
-  if (session) {
-    // logged in
-    titleText = `${session && isPinned ? "[pinned] " : ""} ${
-      session && isPrivate ? "[private] " : "[public] "
-    } ${formatDate(memory.created_at)}: ${memory.title}`;
-  } else {
-    titleText = `${formatDate(memory.created_at)}: ${memory.title}`;
-  }
+  const titleText = useMemo(() => {
+    let titleText;
+    if (session) {
+      // logged in
+      titleText = `${session && isPinned ? "[pinned] " : ""} ${
+        session && isPrivate ? "[private] " : "[public] "
+      } ${formatDate(memory.created_at)}: ${memory.title}`;
+    } else {
+      titleText = `${formatDate(memory.created_at)}: ${memory.title}`;
+    }
+    return titleText;
+  }, [session, isPinned, isPrivate, memory.created_at, memory.title]);
 
   return (
     <Link

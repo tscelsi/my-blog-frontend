@@ -41,7 +41,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       className={clsx(
         "hover:opacity-80 cursor-pointer",
         getStyle(variant),
-        getSelectedStyle(variant, isSelected)
+        getSelectedStyle(variant, isSelected),
+        props.className
       )}
     >
       {children}

@@ -196,10 +196,7 @@ export const useSetMemoryTitle = () => {
         options.data
       );
     },
-    onSuccess: (_res, variables) => {
-      queryClient.invalidateQueries({
-        queryKey: ["memory", variables.memory_id],
-      });
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ["memory"],
       });
