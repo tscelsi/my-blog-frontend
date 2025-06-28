@@ -5,6 +5,7 @@ import { useAuth } from "../hooks/useAuth";
 import { PinMemoryArgs, SetMemoryPrivacyArgs } from "../memory_service";
 import { useMutationState } from "@tanstack/react-query";
 import { useMemo } from "react";
+import { Loader } from "./Loader";
 
 type MemoryListProps = {
   memories: ListMemoryItem[];
@@ -22,8 +23,10 @@ export const MemoryList = ({ memories }: MemoryListProps) => {
         <MemoryListItem key={memory.id} memory={memory} />
       ))}
       {latestIsPending && (
-        <div className="border-b border-dark-grey px-6 md:px-8 h-[20px] text-dark-grey">
-          [blank_]
+        <div className="border-b border-dark-grey px-6 md:px-8 h-[20px]">
+          <div className="w-fit">
+            <Loader />
+          </div>
         </div>
       )}
     </div>

@@ -27,7 +27,7 @@ export const AudioPlayer = () => {
         )}
       </button>
       {!currentName ? (
-        <p className="opacity-40">{"<blank>"}</p>
+        <p className="opacity-40">{"blank_"}</p>
       ) : (
         <p className="text-ellipsis overflow-hidden text-nowrap align-bottom">
           {currentName}
