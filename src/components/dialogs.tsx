@@ -1,10 +1,7 @@
 import { VisuallyHidden, Dialog } from "radix-ui";
 import { MediaType } from "../types";
 import { JSX, useCallback, useState } from "react";
-import {
-  useAddFileFragmentToMemory,
-  useCreateMemoryFromFile,
-} from "../memory_service";
+import { useAddFileFragmentToMemory } from "../memory_service";
 import { useAuth } from "../hooks/useAuth";
 import { ToolbarLayout } from "./Toolbar/ToolbarLayout";
 import {
@@ -14,14 +11,13 @@ import {
 
 type FileDialogProps = {
   type: MediaType;
-  memory_id: string | null;
+  memory_id: string;
   button: JSX.Element;
 };
 
 export const FileDialog = ({ type, memory_id, button }: FileDialogProps) => {
   const { session } = useAuth();
   const addFileToMemory = useAddFileFragmentToMemory();
-  const createMemoryFromFile = useCreateMemoryFromFile();
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   const handleSubmit = useCallback(
@@ -38,25 +34,15 @@ export const FileDialog = ({ type, memory_id, button }: FileDialogProps) => {
         return;
       }
       const toSendData = new FormData();
-      if (memory_id) {
-        // adding to a memory
-        toSendData.append("file", file as Blob);
-        toSendData.append("memory_id", memory_id);
-        toSendData.append("type", type);
-        addFileToMemory.mutateAsync({ data: toSendData }).then(() => {
-          setIsOpen(false);
-        });
-      } else {
-        // creating new memory
-        toSendData.append("file", file as Blob);
-        toSendData.append("memory_title", "blank_");
-        toSendData.append("type", type);
-        createMemoryFromFile.mutateAsync({ data: toSendData }).then(() => {
-          setIsOpen(false);
-        });
-      }
+      // adding to a memory
+      toSendData.append("file", file as Blob);
+      toSendData.append("memory_id", memory_id);
+      toSendData.append("type", type);
+      addFileToMemory.mutateAsync({ data: toSendData }).then(() => {
+        setIsOpen(false);
+      });
     },
-    [session, memory_id]
+    [session, memory_id, addFileToMemory]
   );
 
   return (

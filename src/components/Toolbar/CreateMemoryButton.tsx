@@ -1,6 +1,7 @@
 import { Add20Filled } from "@fluentui/react-icons";
 import { useCreateEmptyMemory } from "../../memory_service";
 import { useNavigate } from "@tanstack/react-router";
+import { Button } from "../Button";
 
 export const CreateMemoryButton = () => {
   const navigate = useNavigate();
@@ -14,11 +15,12 @@ export const CreateMemoryButton = () => {
   };
 
   return (
-    <button
+    <Button
       onClick={handleAddClicked}
       className="cursor-pointer hover:opacity-80"
+      whileTap={{ scale: 0.8, rotate: 100 }}
     >
       <Add20Filled />
-    </button>
+    </Button>
   );
 };

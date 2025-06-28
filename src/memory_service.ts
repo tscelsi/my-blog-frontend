@@ -31,7 +31,34 @@ export const getMemoryQueryOptions = (memoryId: string) => {
   });
 };
 
-export const useDeleteMemoryOrFragment = () => {
+export const useDeleteMemory = () => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: async (memory_id: string) => {
+      return await createAxiosClient().post(`/memory/${memory_id}/forget`);
+    },
+    onMutate: async (memory_id) => {
+      await queryClient.cancelQueries({ queryKey: ["memory"] });
+      const previousMemories = queryClient.getQueryData<ListMemoryItem[]>([
+        "memory",
+      ]);
+      queryClient.setQueryData<ListMemoryItem[]>(["memory"], (old) => {
+        if (!old) return [];
+        const memoryList = new MemoryList([...old]);
+        memoryList.remove(memory_id);
+        return memoryList.getMemories();
+      });
+      return previousMemories;
+    },
+    onError: (_error, _variables, previousMemories) => {
+      queryClient.setQueryData<ListMemoryItem[]>(["memory"], previousMemories);
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["memory"] }),
+  });
+  return mutation;
+};
+
+export const useDeleteFragment = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async ({
@@ -39,7 +66,7 @@ export const useDeleteMemoryOrFragment = () => {
       fragment_ids,
     }: {
       memory_id: string;
-      fragment_ids?: string[];
+      fragment_ids: string[];
     }) => {
       const data = {
         ...(fragment_ids && { fragment_ids }),
@@ -57,24 +84,6 @@ export const useDeleteMemoryOrFragment = () => {
   return mutation;
 };
 
-type CreateMemoryFromFileType = {
-  data: FormData;
-};
-
-export const useCreateMemoryFromFile = () => {
-  const queryClient = useQueryClient();
-  const mutation = useMutation({
-    mutationFn: async (args: CreateMemoryFromFileType) => {
-      return await createAxiosClient().post("/memory/from-file", args.data);
-    },
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["memory"] });
-    },
-  });
-  return mutation;
-};
-
 export const useCreateEmptyMemory = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
@@ -82,45 +91,7 @@ export const useCreateEmptyMemory = () => {
       return await createAxiosClient().post<{ id: string }>("/memory");
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["memory"] }),
-  });
-  return mutation;
-};
-
-type CreateMemoryFromTextType = {
-  data: { memory_title: string; text: string };
-};
-
-export const useCreateMemoryFromText = () => {
-  const queryClient = useQueryClient();
-  const mutation = useMutation({
-    mutationFn: async (args: CreateMemoryFromTextType) => {
-      return await createAxiosClient().post("/memory/from-text", args.data);
-    },
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["memory"] });
-    },
-  });
-  return mutation;
-};
-
-type CreateMemoryFromRichTextType = {
-  data: { memory_title: string; content: Op[] };
-};
-
-export const useCreateMemoryFromRichText = () => {
-  const queryClient = useQueryClient();
-  const mutation = useMutation({
-    mutationFn: async (args: CreateMemoryFromRichTextType) => {
-      return await createAxiosClient().post(
-        "/memory/from-rich-text",
-        args.data
-      );
-    },
-    onSuccess: () => {
-      // Invalidate and refetch
-      queryClient.invalidateQueries({ queryKey: ["memory"] });
-    },
+    mutationKey: ["createEmptyMemory"],
   });
   return mutation;
 };

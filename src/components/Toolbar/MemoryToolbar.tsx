@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Del } from "../../actions";
 import {
-  useDeleteMemoryOrFragment,
+  useDeleteMemory,
   usePinMemory,
   useSetMemoryPrivacy,
 } from "../../memory_service";
@@ -26,7 +26,7 @@ export const MemoryToolbar = ({
   const { session } = useAuth();
   const { mutateAsync: mutateMemoryPin, variables: pinVariables } =
     usePinMemory(memory.id);
-  const deleteMutation = useDeleteMemoryOrFragment();
+  const deleteMemoryMutation = useDeleteMemory();
   const { mutateAsync: mutateMemoryPrivacy, variables: privacyVariables } =
     useSetMemoryPrivacy(memory.id);
   const isSmallScreen = useIsSmallScreen();
@@ -119,13 +119,8 @@ export const MemoryToolbar = ({
       {isEditing && (
         <Del
           onClick={async () => {
-            await deleteMutation
-              .mutateAsync({
-                memory_id: memory.id,
-              })
-              .then(() => {
-                navigate({ to: "/" });
-              });
+            deleteMemoryMutation.mutateAsync(memory.id);
+            navigate({ to: "/" });
           }}
         />
       )}

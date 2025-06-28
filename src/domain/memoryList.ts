@@ -36,4 +36,8 @@ export class MemoryList {
     this.memories.push(newMemory);
     return newMemory;
   }
+
+  remove(memoryId: string) {
+    this.memories = this.memories.filter((m) => m.id !== memoryId);
+  }
 }

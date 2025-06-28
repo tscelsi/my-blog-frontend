@@ -2,13 +2,21 @@ import { DropdownMenu } from "radix-ui";
 import { Button } from "./Button";
 import { AddFragmentButton } from "./Toolbar/AddFragmentButton";
 import { Memory } from "../types";
-import { usePinMemory, useSetMemoryPrivacy } from "../memory_service";
+import {
+  useDeleteMemory,
+  usePinMemory,
+  useSetMemoryPrivacy,
+} from "../memory_service";
+import { useNavigate } from "@tanstack/react-router";
 
 export const EditActions = ({ memory }: { memory: Memory }) => {
   const { mutateAsync: mutateMemoryPin, variables: pinVariables } =
     usePinMemory(memory.id);
   const { mutateAsync: mutateMemoryPrivacy, variables: privacyVariables } =
     useSetMemoryPrivacy(memory.id);
+  const { mutateAsync: deleteMemory } = useDeleteMemory();
+  const navigate = useNavigate();
+
   const handlePinClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     mutateMemoryPin({
@@ -25,6 +33,12 @@ export const EditActions = ({ memory }: { memory: Memory }) => {
     }).catch((error) => {
       console.error("Error toggling privacy:", error);
     });
+  };
+
+  const handleDeleteClicked = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    deleteMemory(memory.id);
+    navigate({ to: "/" });
   };
   const isPrivate = privacyVariables?.private_ ?? memory.private;
   const isPinned = pinVariables?.pin ?? memory.pinned;
@@ -71,7 +85,7 @@ export const EditActions = ({ memory }: { memory: Memory }) => {
             <Button
               className="px-2 py-1 text-start"
               variant="destructive"
-              onClick={() => console.log("del clicked")}
+              onClick={handleDeleteClicked}
             >
               [del]
             </Button>

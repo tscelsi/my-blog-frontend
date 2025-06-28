@@ -35,7 +35,7 @@ const getSelectedStyle = (
 export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ({ children, variant = "default", isSelected = false, ...props }, ref) => (
     <motion.button
-      whileTap={{ scale: 0.95 }}
+      whileTap={{ scale: 0.9 }}
       ref={ref}
       {...props}
       className={clsx(

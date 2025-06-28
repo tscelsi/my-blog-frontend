@@ -11,11 +11,21 @@ type MemoryListProps = {
 };
 
 export const MemoryList = ({ memories }: MemoryListProps) => {
+  const m = useMutationState({
+    filters: { mutationKey: ["createEmptyMemory"] },
+    select: (mutation) => mutation.state.status,
+  });
+  const latestIsPending = m[m.length - 1] === "pending";
   return (
     <div className="flex flex-col">
       {memories.map((memory) => (
         <MemoryListItem key={memory.id} memory={memory} />
       ))}
+      {latestIsPending && (
+        <div className="border-b border-dark-grey px-6 md:px-8 h-[20px] text-dark-grey">
+          [blank_]
+        </div>
+      )}
     </div>
   );
 };

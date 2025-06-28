@@ -1,5 +1,5 @@
 import {
-  useDeleteMemoryOrFragment,
+  useDeleteFragment,
   useModifyRichTextFragment,
 } from "../memory_service";
 import type {
@@ -48,7 +48,7 @@ export const File = ({ fragment, memory, isEditing }: FileFragmentProps) => {
   }/storage/v1/object/public/memories.develop/${memory.user_id}/${
     fragment.name
   }?download=${fragment.name}`;
-  const deleteMutation = useDeleteMemoryOrFragment();
+  const deleteFragmentMutation = useDeleteFragment();
   const isUploading = fragment.status === "uploading";
   const { session } = useAuth();
   return (
@@ -58,7 +58,7 @@ export const File = ({ fragment, memory, isEditing }: FileFragmentProps) => {
       {isEditing && !isUploading && session && (
         <Del
           onClick={async () => {
-            await deleteMutation.mutateAsync({
+            await deleteFragmentMutation.mutateAsync({
               memory_id: memory.id,
               fragment_ids: [fragment.id],
             });
@@ -75,7 +75,7 @@ export const Audio = ({ memory, fragment, isEditing }: FileFragmentProps) => {
   }/storage/v1/object/public/memories.develop/${memory.user_id}/${
     fragment.name
   }`;
-  const deleteMutation = useDeleteMemoryOrFragment();
+  const deleteFragmentMutation = useDeleteFragment();
   const { session } = useAuth();
   const isError = fragment.status === "error";
   const { play, pause, isPlaying, currentSrc } = useAudio();
@@ -114,7 +114,7 @@ export const Audio = ({ memory, fragment, isEditing }: FileFragmentProps) => {
       {isEditing && session && (
         <Del
           onClick={async () => {
-            await deleteMutation.mutateAsync({
+            await deleteFragmentMutation.mutateAsync({
               memory_id: memory.id,
               fragment_ids: [fragment.id],
             });
@@ -133,7 +133,7 @@ export const Image = ({ memory, fragment, isEditing }: FileFragmentProps) => {
   }`;
   const imageUrl = `${fileStem}?quality=30&width=100&height=10`;
   const downloadUrl = `${fileStem}?download=${fragment.name}`;
-  const deleteMutation = useDeleteMemoryOrFragment();
+  const deleteFragmentMutation = useDeleteFragment();
   const { session } = useAuth();
   return (
     <div
@@ -150,7 +150,7 @@ export const Image = ({ memory, fragment, isEditing }: FileFragmentProps) => {
         {isEditing && session && (
           <Del
             onClick={async () => {
-              await deleteMutation.mutateAsync({
+              await deleteFragmentMutation.mutateAsync({
                 memory_id: memory.id,
                 fragment_ids: [fragment.id],
               });
@@ -170,7 +170,7 @@ export const RichText = ({
   const quillRef = useRef<Quill>(null);
   const [defaultContent] = useState<Op[]>(fragment.content || []);
 
-  const deleteMutation = useDeleteMemoryOrFragment();
+  const deleteFragmentMutation = useDeleteFragment();
   const modifyRichTextFragment = useModifyRichTextFragment();
 
   // Store the latest fragment and memory in refs so the debounced function always has the latest values
@@ -217,7 +217,7 @@ export const RichText = ({
         <div className="flex items-center gap-4">
           <Del
             onClick={() => {
-              deleteMutation.mutateAsync({
+              deleteFragmentMutation.mutateAsync({
                 memory_id: memory.id,
                 fragment_ids: [fragment.id],
               });
