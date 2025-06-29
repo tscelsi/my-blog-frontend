@@ -37,7 +37,7 @@ export const AddFragmentButton = ({ memory, trigger }: ToolbarProps) => {
   return (
     <Drawer.Root open={open} onOpenChange={setOpen}>
       <Drawer.Trigger asChild>
-        {trigger ? trigger : <Button className="text-start">[add]</Button>}
+        {trigger ? trigger : <Button className="text-start">[new fragment]</Button>}
       </Drawer.Trigger>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 bg-dark-grey/10" />

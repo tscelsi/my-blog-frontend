@@ -16,6 +16,7 @@ import { useEffect, useRef, useState } from "react";
 import Quill, { Op } from "quill";
 import isEqual from "lodash.isequal";
 import debounce from "lodash.debounce";
+import { supabase } from "../supabaseClient";
 
 type FragmentBaseProps = {
   memory: MemoryType;
@@ -126,13 +127,22 @@ export const Audio = ({ memory, fragment, isEditing }: FileFragmentProps) => {
 };
 
 export const Image = ({ memory, fragment, isEditing }: FileFragmentProps) => {
-  const fileStem = `${
-    import.meta.env.VITE_SUPABASE_URL
-  }/storage/v1/object/public/memories.develop/${memory.user_id}/${
-    fragment.name
-  }`;
-  const imageUrl = `${fileStem}?quality=30&width=100&height=10`;
-  const downloadUrl = `${fileStem}?download=${fragment.name}`;
+  const {
+    data: { publicUrl: fileUrl },
+  } = supabase.storage
+    .from("memories.develop")
+    .getPublicUrl(`${memory.user_id}/${fragment.name}`, {
+      download: true,
+    });
+  const {
+    data: { publicUrl: displayUrl },
+  } = supabase.storage
+    .from("memories.develop")
+    .getPublicUrl(`${memory.user_id}/${fragment.name}`, {
+      transform: {
+        quality: 20,
+      },
+    });
   const deleteFragmentMutation = useDeleteFragment();
   const { session } = useAuth();
   return (
@@ -142,11 +152,11 @@ export const Image = ({ memory, fragment, isEditing }: FileFragmentProps) => {
     >
       <img
         className="object-contain rounded-sm"
-        src={imageUrl}
+        src={displayUrl}
         alt={fragment.name}
       />
       <div className="flex gap-4">
-        {!isEditing && <Download url={downloadUrl} />}
+        {!isEditing && <Download url={fileUrl} />}
         {isEditing && session && (
           <Del
             onClick={async () => {
