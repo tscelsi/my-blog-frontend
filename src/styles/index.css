@@ -17,9 +17,9 @@
 :root {
   background-color: var(--color-bg);
   color: var(--color-text);
-  font-family: monospace;
+  font-family: var(--font-mono);
   scrollbar-width: thin;
-
+  font-size: 12px;
 }
 
 #root {
