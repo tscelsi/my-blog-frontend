@@ -1,11 +1,12 @@
 import { Memory } from "../../types";
-import { FileDialog } from "../dialogs";
+import { FileDialog, CreateRssFeedDialog } from "../dialogs";
 import { Drawer } from "vaul";
 import {
   TextT20Filled,
   Image20Filled,
   MusicNote220Filled,
   Document20Filled,
+  Rss20Filled,
 } from "@fluentui/react-icons";
 import { useAddRichTextFragmentToMemory } from "../../memory_service";
 import clsx from "clsx";
@@ -37,7 +38,11 @@ export const AddFragmentButton = ({ memory, trigger }: ToolbarProps) => {
   return (
     <Drawer.Root open={open} onOpenChange={setOpen}>
       <Drawer.Trigger asChild>
-        {trigger ? trigger : <Button className="text-start">[new fragment]</Button>}
+        {trigger ? (
+          trigger
+        ) : (
+          <Button className="text-start">[new fragment]</Button>
+        )}
       </Drawer.Trigger>
       <Drawer.Portal>
         <Drawer.Overlay className="fixed inset-0 bg-dark-grey/10" />
@@ -83,7 +88,7 @@ export const AddFragmentButton = ({ memory, trigger }: ToolbarProps) => {
                 }
               />
             </div>
-            <div className="p-4 border-dark-grey cursor-pointer hover:opacity-80 hover:bg-dark-grey/10">
+            <div className="p-4 border-b border-dark-grey cursor-pointer hover:opacity-80 hover:bg-dark-grey/10">
               <FileDialog
                 type="file"
                 memory_id={memory.id}
@@ -91,6 +96,17 @@ export const AddFragmentButton = ({ memory, trigger }: ToolbarProps) => {
                   <div className="flex items-center gap-2 items-end">
                     <Document20Filled />
                     <p>File</p>
+                  </div>
+                }
+              />
+            </div>
+            <div className="p-4 border-dark-grey cursor-pointer hover:opacity-80 hover:bg-dark-grey/10">
+              <CreateRssFeedDialog
+                memory_id={memory.id}
+                button={
+                  <div className="flex items-center gap-2 items-end">
+                    <Rss20Filled />
+                    <p>RSS Feed</p>
                   </div>
                 }
               />

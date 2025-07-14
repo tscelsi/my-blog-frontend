@@ -6,7 +6,7 @@ import {
   useSetFragmentOrder,
   useSetMemoryTitle,
 } from "../memory_service";
-import { Audio, Image, File, RichText } from "./Fragment";
+import { Audio, Image, File, RichText, RssFeed } from "./Fragment";
 import { MemoryToolbar } from "./Toolbar/MemoryToolbar";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { formatDate } from "../utils/date_stuff";
@@ -63,6 +63,13 @@ const Item = ({
             />
           ) : fragment.type === "rich_text" ? (
             <RichText
+              key={fragment.id}
+              fragment={fragment}
+              memory={memory}
+              isEditing={isEditing}
+            />
+          ) : fragment.type === "rss_feed" ? (
+            <RssFeed
               key={fragment.id}
               fragment={fragment}
               memory={memory}

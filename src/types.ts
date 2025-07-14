@@ -1,7 +1,7 @@
 import { Op } from "quill";
 
 export type FileType = "file" | "audio" | "image";
-export type MediaType = "rich_text" | FileType;
+export type MediaType = "rich_text" | FileType | "rss_feed";
 
 export interface BaseFragment {
   type: MediaType;
@@ -13,6 +13,11 @@ export interface RichTextFragment extends BaseFragment {
   content: Op[];
 }
 
+export interface RssFeedFragment extends BaseFragment {
+  type: "rss_feed";
+  url: string;
+}
+
 export interface FileFragment extends BaseFragment {
   type: "file" | "audio" | "image";
   name: string;
@@ -20,7 +25,7 @@ export interface FileFragment extends BaseFragment {
   status: "uploading" | "uploaded" | "error";
 }
 
-export type Fragment = FileFragment | RichTextFragment;
+export type Fragment = FileFragment | RichTextFragment | RssFeedFragment;
 
 export interface Memory {
   id: string;

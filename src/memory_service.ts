@@ -104,7 +104,26 @@ export const useAddFileFragmentToMemory = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (args: AddFileFragmentToMemoryType) => {
-      return await createAxiosClient().post("/fragment/add-file", args.data);
+      return await createAxiosClient().post("/fragment/file", args.data);
+    },
+    onSuccess: () => {
+      // Invalidate and refetch
+      queryClient.invalidateQueries({ queryKey: ["memory"] });
+    },
+  });
+  return mutation;
+};
+
+type AddRssFragmentToMemoryType = {
+  urls: string[];
+  memory_id: string;
+};
+
+export const useAddRssFragmentToMemory = () => {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: async (data: AddRssFragmentToMemoryType) => {
+      return await createAxiosClient().post("/fragment/rss", data);
     },
     onSuccess: () => {
       // Invalidate and refetch
@@ -123,7 +142,7 @@ export const useAddRichTextFragmentToMemory = (memoryId: string) => {
   const mutation = useMutation({
     mutationFn: async (args: AddRichTextFragmentToMemoryType) => {
       return (await createAxiosClient().post)<{ fragment_id: string }>(
-        "/fragment/add-rich-text",
+        "/fragment/rich-text",
         args.data
       );
     },
@@ -141,10 +160,7 @@ export const useModifyRichTextFragment = () => {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: async (args: ModifyRichTextFragmentType) => {
-      return await createAxiosClient().post(
-        "/fragment/modify-rich-text",
-        args.data
-      );
+      return await createAxiosClient().put("/fragment/rich-text", args.data);
     },
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["memory"] }),
   });

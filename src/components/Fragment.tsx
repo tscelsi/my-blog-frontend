@@ -6,6 +6,7 @@ import type {
   FileFragment,
   Memory as MemoryType,
   RichTextFragment,
+  RssFeedFragment,
 } from "../types";
 import { Play16Filled, Pause16Filled } from "@fluentui/react-icons";
 import { Del, Download } from "../actions";
@@ -17,6 +18,9 @@ import Quill, { Op } from "quill";
 import isEqual from "lodash.isequal";
 import debounce from "lodash.debounce";
 import { supabase } from "../supabaseClient";
+import { RssChannel, useGetRssFeed } from "../queries/rss_service";
+import { Loader } from "./Loader";
+import { Rss20Regular } from "@fluentui/react-icons";
 
 type FragmentBaseProps = {
   memory: MemoryType;
@@ -235,6 +239,80 @@ export const RichText = ({
           />
         </div>
       )}
+    </div>
+  );
+};
+
+type RssFeedFragmentProps = {
+  fragment: RssFeedFragment;
+} & FragmentBaseProps;
+
+export const RssFeed = ({
+  fragment,
+  memory,
+  isEditing,
+}: RssFeedFragmentProps) => {
+  const deleteFragmentMutation = useDeleteFragment();
+  const { data, isLoading, isError } = useGetRssFeed(memory.id, fragment.id);
+  if (isLoading) {
+    return (
+      <div className="flex justify-start w-fit">
+        <Loader />
+      </div>
+    );
+  }
+  if (!isLoading && isError) {
+    return (
+      <div className="flex justify-start w-fit">
+        <p>Error loading RSS feed</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div
+        className="flex border px-2 py-1 rounded-sm border-dark-grey"
+        data-fragment-id={fragment.id}
+      >
+        <div className="flex-1">
+          {data?.map((item, index) => (
+            <RssFeedItem item={item} key={`${fragment.id}-item-${index}`} />
+          ))}
+        </div>
+        <Rss20Regular className="opacity-20" />
+      </div>
+      <div className="flex justify-between items-center gap-4">
+        {isEditing && (
+          <Del
+            onClick={() => {
+              deleteFragmentMutation.mutateAsync({
+                memory_id: memory.id,
+                fragment_ids: [fragment.id],
+              });
+            }}
+          />
+        )}
+      </div>
+    </div>
+  );
+};
+
+const RssFeedItem = ({ item }: { item: RssChannel["items"][number] }) => {
+  return (
+    <div className="flex flex-col mb-2 last:mb-0">
+      <a
+        className="text-link hover:underline"
+        href={item.link}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        [{item.source}] {item.title}
+      </a>
+      {/* <p>{item.description}</p> */}
+      <p className="text-sm text-dark-grey">
+        Published: {new Date(item.pub_date).toLocaleString()}
+      </p>
     </div>
   );
 };
