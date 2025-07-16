@@ -1,5 +1,5 @@
 import { Memory } from "../../types";
-import { FileDialog, CreateRssFeedDialog } from "../dialogs";
+import { FileDialog, CreateModifyRssFeedDialog } from "../dialogs";
 import { Drawer } from "vaul";
 import {
   TextT20Filled,
@@ -101,7 +101,7 @@ export const AddFragmentButton = ({ memory, trigger }: ToolbarProps) => {
               />
             </div>
             <div className="p-4 border-dark-grey cursor-pointer hover:opacity-80 hover:bg-dark-grey/10">
-              <CreateRssFeedDialog
+              <CreateModifyRssFeedDialog
                 memory_id={memory.id}
                 button={
                   <div className="flex items-center gap-2 items-end">

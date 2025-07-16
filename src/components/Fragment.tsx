@@ -21,7 +21,7 @@ import { supabase } from "../supabaseClient";
 import { RssChannel, useGetRssFeed } from "../queries/rss_service";
 import { Loader } from "./Loader";
 import { Rss20Regular } from "@fluentui/react-icons";
-import { ModifyRssFeedDialog } from "./dialogs";
+import { CreateModifyRssFeedDialog } from "./dialogs";
 import { Button } from "./Button";
 
 type FragmentBaseProps = {
@@ -263,16 +263,15 @@ export const RssFeed = ({
       </div>
     );
   }
+  let content;
   if (!isLoading && isError) {
-    return (
+    content = (
       <div className="flex justify-start w-fit">
         <p>Error loading RSS feed</p>
       </div>
     );
-  }
-
-  return (
-    <div className="flex flex-col gap-3">
+  } else {
+    content = (
       <div
         className="flex border px-2 py-1 rounded-sm border-dark-grey"
         data-fragment-id={fragment.id}
@@ -284,13 +283,19 @@ export const RssFeed = ({
         </div>
         <Rss20Regular className="opacity-20" />
       </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-3">
+      {content}
       <div className="flex items-center gap-3">
         {isEditing && (
           <>
-            <ModifyRssFeedDialog
+            <CreateModifyRssFeedDialog
               memory_id={memory.id}
               fragment_id={fragment.id}
-              urls={fragment.urls}
+              defaultUrls={fragment.urls}
               button={<Button>[edit]</Button>}
             />
             <Del
