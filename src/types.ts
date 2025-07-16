@@ -15,7 +15,7 @@ export interface RichTextFragment extends BaseFragment {
 
 export interface RssFeedFragment extends BaseFragment {
   type: "rss_feed";
-  url: string;
+  urls: string[];
 }
 
 export interface FileFragment extends BaseFragment {

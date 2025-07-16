@@ -21,6 +21,8 @@ import { supabase } from "../supabaseClient";
 import { RssChannel, useGetRssFeed } from "../queries/rss_service";
 import { Loader } from "./Loader";
 import { Rss20Regular } from "@fluentui/react-icons";
+import { ModifyRssFeedDialog } from "./dialogs";
+import { Button } from "./Button";
 
 type FragmentBaseProps = {
   memory: MemoryType;
@@ -282,16 +284,24 @@ export const RssFeed = ({
         </div>
         <Rss20Regular className="opacity-20" />
       </div>
-      <div className="flex justify-between items-center gap-4">
+      <div className="flex items-center gap-3">
         {isEditing && (
-          <Del
-            onClick={() => {
-              deleteFragmentMutation.mutateAsync({
-                memory_id: memory.id,
-                fragment_ids: [fragment.id],
-              });
-            }}
-          />
+          <>
+            <ModifyRssFeedDialog
+              memory_id={memory.id}
+              fragment_id={fragment.id}
+              urls={fragment.urls}
+              button={<Button>[edit]</Button>}
+            />
+            <Del
+              onClick={() => {
+                deleteFragmentMutation.mutateAsync({
+                  memory_id: memory.id,
+                  fragment_ids: [fragment.id],
+                });
+              }}
+            />
+          </>
         )}
       </div>
     </div>
