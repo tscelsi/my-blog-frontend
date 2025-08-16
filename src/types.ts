@@ -29,7 +29,9 @@ export type Fragment = FileFragment | RichTextFragment | RssFeedFragment;
 
 export interface Memory {
   id: string;
-  user_id: string;
+  owner: string;
+  readers: string[];
+  editors: string[];
   title: string;
   fragments: Fragment[];
   private: boolean;

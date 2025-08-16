@@ -52,7 +52,7 @@ export const getFileFragment = (fragment: FileFragment) => {
 export const File = ({ fragment, memory, isEditing }: FileFragmentProps) => {
   const fileUrl = `${
     import.meta.env.VITE_SUPABASE_URL
-  }/storage/v1/object/public/memories.develop/${memory.user_id}/${
+  }/storage/v1/object/public/memories.develop/${memory.owner}/${
     fragment.name
   }?download=${fragment.name}`;
   const deleteFragmentMutation = useDeleteFragment();
@@ -79,7 +79,7 @@ export const File = ({ fragment, memory, isEditing }: FileFragmentProps) => {
 export const Audio = ({ memory, fragment, isEditing }: FileFragmentProps) => {
   const fileUrl = `${
     import.meta.env.VITE_SUPABASE_URL
-  }/storage/v1/object/public/memories.develop/${memory.user_id}/${
+  }/storage/v1/object/public/memories.develop/${memory.owner}/${
     fragment.name
   }`;
   const deleteFragmentMutation = useDeleteFragment();
@@ -137,14 +137,14 @@ export const Image = ({ memory, fragment, isEditing }: FileFragmentProps) => {
     data: { publicUrl: fileUrl },
   } = supabase.storage
     .from("memories.develop")
-    .getPublicUrl(`${memory.user_id}/${fragment.name}`, {
+    .getPublicUrl(`${memory.owner}/${fragment.name}`, {
       download: true,
     });
   const {
     data: { publicUrl: displayUrl },
   } = supabase.storage
     .from("memories.develop")
-    .getPublicUrl(`${memory.user_id}/${fragment.name}`, {
+    .getPublicUrl(`${memory.owner}/${fragment.name}`, {
       transform: {
         quality: 20,
       },

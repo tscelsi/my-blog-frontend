@@ -13,7 +13,7 @@ export const listMemoriesQueryOptions = () => {
     queryKey: ["memory"],
     queryFn: async () => {
       const response =
-        await createAxiosClient().get<ListMemoryItem[]>("/public/memory");
+        await createAxiosClient().get<ListMemoryItem[]>("/memory");
       return response.data || [];
     },
   });
@@ -24,7 +24,7 @@ export const getMemoryQueryOptions = (memoryId: string) => {
     queryKey: ["memory", memoryId],
     queryFn: async () => {
       const response = await createAxiosClient().get<MemoryType>(
-        `/public/memory/${memoryId}`
+        `/memory/${memoryId}`
       );
       return response.data || null;
     },
