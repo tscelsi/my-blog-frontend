@@ -3,17 +3,17 @@ import { Fragment, Memory as MemoryType, Tag } from "../types";
 class Memory {
   id: string;
   title: string;
-  user_id: string;
+  owner: string;
   fragments: Fragment[];
   private: boolean;
   pinned: boolean;
   tags: Set<string>;
   updated_at: Date;
 
-  constructor({ title, user_id, fragments = [] }: MemoryType) {
+  constructor({ title, owner, fragments = [] }: MemoryType) {
     this.id = crypto.randomUUID();
     this.title = title;
-    this.user_id = user_id;
+    this.owner = owner;
     this.fragments = fragments;
     this.private = true;
     this.pinned = false;
