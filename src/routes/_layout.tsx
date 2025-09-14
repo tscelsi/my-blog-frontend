@@ -3,7 +3,7 @@ import { useAuth } from "../hooks/useAuth";
 import { Menubar } from "../components/Toolbar/Menubar";
 import { MemoryList } from "../components/MemoryList";
 import { Footer } from "../components/Footer";
-import { listMemoriesQueryOptions } from "../memory_service";
+import { listMemoriesQueryOptions } from "../queries/memory_service";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useIsSmallScreen } from "../hooks/useIsSmallScreen";
 import { useRef } from "react";

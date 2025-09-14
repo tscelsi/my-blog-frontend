@@ -5,7 +5,8 @@ import {
   getMemoryQueryOptions,
   useSetFragmentOrder,
   useSetMemoryTitle,
-} from "../memory_service";
+} from "../queries/memory_service";
+import { getPublicMemoryQueryOptions } from "../queries/sharing_service";
 import { Audio, Image, File, RichText, RssFeed } from "./Fragment";
 import { MemoryToolbar } from "./Toolbar/MemoryToolbar";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -84,8 +85,20 @@ const Item = ({
   );
 };
 
-export const Memory = ({ memoryId }: { memoryId: string }) => {
-  const options = useMemo(() => getMemoryQueryOptions(memoryId), [memoryId]);
+export const Memory = ({
+  memoryId,
+  isPublic = false,
+}: {
+  memoryId: string;
+  isPublic?: boolean;
+}) => {
+  const options = useMemo(
+    () =>
+      isPublic
+        ? getPublicMemoryQueryOptions(memoryId)
+        : getMemoryQueryOptions(memoryId),
+    [memoryId, isPublic]
+  );
   const { data: memory } = useSuspenseQuery(options);
   const [isEditing, setIsEditing] = useState(false);
   const [orderedFragments, setOrderedFragments] = useState(memory.fragments);

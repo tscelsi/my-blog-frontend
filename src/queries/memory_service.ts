@@ -3,10 +3,10 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { ListMemoryItem, type Memory as MemoryType } from "./types";
+import { ListMemoryItem, type Memory as MemoryType } from "../types";
 import { Op } from "quill";
-import { createAxiosClient } from "./utils/axios_interceptor";
-import { MemoryList } from "./domain/memoryList";
+import { createAxiosClient } from "../utils/axios_interceptor";
+import { MemoryList } from "../domain/memoryList";
 
 export const listMemoriesQueryOptions = () => {
   return queryOptions({

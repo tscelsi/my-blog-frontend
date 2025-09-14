@@ -6,7 +6,7 @@ import {
   useDeleteMemory,
   usePinMemory,
   useSetMemoryPrivacy,
-} from "../memory_service";
+} from "../queries/memory_service";
 import { useNavigate } from "@tanstack/react-router";
 
 export const EditActions = ({ memory }: { memory: Memory }) => {

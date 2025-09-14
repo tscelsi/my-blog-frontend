@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { Menubar } from "../components/Toolbar/Menubar";
 import { useIsSmallScreen } from "../hooks/useIsSmallScreen";
-import { listMemoriesQueryOptions } from "../memory_service";
+import { listMemoriesQueryOptions } from "../queries/memory_service";
 import { useAuth } from "../hooks/useAuth";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { MemoryList } from "../components/MemoryList";

@@ -13,6 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as LayoutImport } from './routes/_layout'
 import { Route as LayoutIndexImport } from './routes/_layout.index'
+import { Route as PublicMemoryIdImport } from './routes/public/$memoryId'
 import { Route as AuthLoginImport } from './routes/auth/login'
 import { Route as AuthForgotPasswordImport } from './routes/auth/forgot-password'
 import { Route as AuthConfirmImport } from './routes/auth/confirm'
@@ -30,6 +31,12 @@ const LayoutIndexRoute = LayoutIndexImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => LayoutRoute,
+} as any)
+
+const PublicMemoryIdRoute = PublicMemoryIdImport.update({
+  id: '/public/$memoryId',
+  path: '/public/$memoryId',
+  getParentRoute: () => rootRoute,
 } as any)
 
 const AuthLoginRoute = AuthLoginImport.update({
@@ -108,6 +115,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthLoginImport
       parentRoute: typeof rootRoute
     }
+    '/public/$memoryId': {
+      id: '/public/$memoryId'
+      path: '/public/$memoryId'
+      fullPath: '/public/$memoryId'
+      preLoaderRoute: typeof PublicMemoryIdImport
+      parentRoute: typeof rootRoute
+    }
     '/_layout/': {
       id: '/_layout/'
       path: '/'
@@ -140,6 +154,7 @@ export interface FileRoutesByFullPath {
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
+  '/public/$memoryId': typeof PublicMemoryIdRoute
   '/': typeof LayoutIndexRoute
 }
 
@@ -149,6 +164,7 @@ export interface FileRoutesByTo {
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
+  '/public/$memoryId': typeof PublicMemoryIdRoute
   '/': typeof LayoutIndexRoute
 }
 
@@ -160,6 +176,7 @@ export interface FileRoutesById {
   '/auth/confirm': typeof AuthConfirmRoute
   '/auth/forgot-password': typeof AuthForgotPasswordRoute
   '/auth/login': typeof AuthLoginRoute
+  '/public/$memoryId': typeof PublicMemoryIdRoute
   '/_layout/': typeof LayoutIndexRoute
 }
 
@@ -172,6 +189,7 @@ export interface FileRouteTypes {
     | '/auth/confirm'
     | '/auth/forgot-password'
     | '/auth/login'
+    | '/public/$memoryId'
     | '/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -180,6 +198,7 @@ export interface FileRouteTypes {
     | '/auth/confirm'
     | '/auth/forgot-password'
     | '/auth/login'
+    | '/public/$memoryId'
     | '/'
   id:
     | '__root__'
@@ -189,6 +208,7 @@ export interface FileRouteTypes {
     | '/auth/confirm'
     | '/auth/forgot-password'
     | '/auth/login'
+    | '/public/$memoryId'
     | '/_layout/'
   fileRoutesById: FileRoutesById
 }
@@ -199,6 +219,7 @@ export interface RootRouteChildren {
   AuthConfirmRoute: typeof AuthConfirmRoute
   AuthForgotPasswordRoute: typeof AuthForgotPasswordRoute
   AuthLoginRoute: typeof AuthLoginRoute
+  PublicMemoryIdRoute: typeof PublicMemoryIdRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
@@ -207,6 +228,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthConfirmRoute: AuthConfirmRoute,
   AuthForgotPasswordRoute: AuthForgotPasswordRoute,
   AuthLoginRoute: AuthLoginRoute,
+  PublicMemoryIdRoute: PublicMemoryIdRoute,
 }
 
 export const routeTree = rootRoute
@@ -223,7 +245,8 @@ export const routeTree = rootRoute
         "/auth/change-password",
         "/auth/confirm",
         "/auth/forgot-password",
-        "/auth/login"
+        "/auth/login",
+        "/public/$memoryId"
       ]
     },
     "/_layout": {
@@ -248,6 +271,9 @@ export const routeTree = rootRoute
     },
     "/auth/login": {
       "filePath": "auth/login.tsx"
+    },
+    "/public/$memoryId": {
+      "filePath": "public/$memoryId.tsx"
     },
     "/_layout/": {
       "filePath": "_layout.index.tsx",

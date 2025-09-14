@@ -1,7 +1,7 @@
 import {
   useDeleteFragment,
   useModifyRichTextFragment,
-} from "../memory_service";
+} from "../queries/memory_service";
 import type {
   FileFragment,
   Memory as MemoryType,
@@ -79,9 +79,7 @@ export const File = ({ fragment, memory, isEditing }: FileFragmentProps) => {
 export const Audio = ({ memory, fragment, isEditing }: FileFragmentProps) => {
   const fileUrl = `${
     import.meta.env.VITE_SUPABASE_URL
-  }/storage/v1/object/public/memories.develop/${memory.owner}/${
-    fragment.name
-  }`;
+  }/storage/v1/object/public/memories.develop/${memory.owner}/${fragment.name}`;
   const deleteFragmentMutation = useDeleteFragment();
   const { session } = useAuth();
   const isError = fragment.status === "error";

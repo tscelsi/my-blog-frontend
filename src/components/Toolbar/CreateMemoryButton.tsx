@@ -1,5 +1,5 @@
 import { Add20Filled } from "@fluentui/react-icons";
-import { useCreateEmptyMemory } from "../../memory_service";
+import { useCreateEmptyMemory } from "../../queries/memory_service";
 import { useNavigate } from "@tanstack/react-router";
 import { Button } from "../Button";
 

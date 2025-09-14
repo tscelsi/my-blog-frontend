@@ -8,7 +8,7 @@ import {
   Document20Filled,
   Rss20Filled,
 } from "@fluentui/react-icons";
-import { useAddRichTextFragmentToMemory } from "../../memory_service";
+import { useAddRichTextFragmentToMemory } from "../../queries/memory_service";
 import clsx from "clsx";
 import { useState } from "react";
 import { Button } from "../Button";

@@ -2,7 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { formatDate } from "../utils/date_stuff";
 import { ListMemoryItem } from "../types";
 import { useAuth } from "../hooks/useAuth";
-import { PinMemoryArgs, SetMemoryPrivacyArgs } from "../memory_service";
+import { PinMemoryArgs, SetMemoryPrivacyArgs } from "../queries/memory_service";
 import { useMutationState } from "@tanstack/react-query";
 import { useMemo } from "react";
 import { Loader } from "./Loader";

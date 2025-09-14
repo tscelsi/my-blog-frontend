@@ -1,17 +1,14 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { Del } from "../../actions";
-import {
-  useDeleteMemory,
-  usePinMemory,
-  useSetMemoryPrivacy,
-} from "../../memory_service";
+import { useDeleteMemory, usePinMemory } from "../../queries/memory_service";
+import { ShareMemoryDrawer } from "./ShareMemoryDrawer";
 import { Memory } from "../../types";
 import { useIsSmallScreen } from "../../hooks/useIsSmallScreen";
 import { useAuth } from "../../hooks/useAuth";
 import clsx from "clsx";
-import { AddFragmentButton } from "./AddFragmentButton";
 import { Button } from "../Button";
 import { EditActions } from "../EditActions";
+import { AddFragmentButton } from "./AddFragmentButton";
 
 export const MemoryToolbar = ({
   memory,
@@ -24,12 +21,15 @@ export const MemoryToolbar = ({
 }) => {
   const navigate = useNavigate();
   const { session } = useAuth();
+  const canEdit =
+    session?.user.id === memory.owner ||
+    memory.editors.some((e) => e === session?.user.id);
+  const isOwner = session?.user.id === memory.owner;
   const { mutateAsync: mutateMemoryPin, variables: pinVariables } =
     usePinMemory(memory.id);
   const deleteMemoryMutation = useDeleteMemory();
-  const { mutateAsync: mutateMemoryPrivacy, variables: privacyVariables } =
-    useSetMemoryPrivacy(memory.id);
   const isSmallScreen = useIsSmallScreen();
+  // Share drawer state managed internally in ShareMemoryDrawer
 
   const handlePinClicked = () => {
     mutateMemoryPin({
@@ -40,16 +40,9 @@ export const MemoryToolbar = ({
     });
   };
 
-  const isPrivate = privacyVariables?.private_ ?? memory.private;
   const isPinned = pinVariables?.pin ?? memory.pinned;
 
-  const togglePrivatePublic = () => {
-    mutateMemoryPrivacy({
-      private_: !memory.private,
-    }).catch((error) => {
-      console.error("Error toggling privacy:", error);
-    });
-  };
+  // Sharing logic moved into ShareMemoryDrawer
   if (isSmallScreen) {
     return (
       <div
@@ -63,7 +56,7 @@ export const MemoryToolbar = ({
           <Link to="/" className="w-fit">
             <Button>[back]</Button>
           </Link>
-          {session && (
+          {session && canEdit && (
             <Button
               onClick={toggleEdit}
               className="cursor-pointer hover:opacity-80"
@@ -72,9 +65,20 @@ export const MemoryToolbar = ({
             </Button>
           )}
         </div>
-        {isEditing && <EditActions memory={memory} />}
+        <div className="flex gap-2 items-center">
+          {isEditing && <EditActions memory={memory} />}
+          {isEditing && (
+            <ShareMemoryDrawer
+              memory={memory}
+              trigger={<Button className="text-start">[sharing]</Button>}
+            />
+          )}
+        </div>
       </div>
     );
+  }
+  if (!session || !canEdit) {
+    return <div />; // empty div to pad
   }
   return (
     <div
@@ -90,8 +94,14 @@ export const MemoryToolbar = ({
             <Button>[back]</Button>
           </Link>
         </>
-      )}
+      )}{" "}
       {isEditing && <AddFragmentButton memory={memory} />}
+      {isEditing && isOwner && (
+        <ShareMemoryDrawer
+          memory={memory}
+          trigger={<Button className="text-start">[sharing]</Button>}
+        />
+      )}
       {isEditing &&
         (isPinned ? (
           <Button isSelected onClick={handlePinClicked}>
@@ -100,22 +110,9 @@ export const MemoryToolbar = ({
         ) : (
           <Button onClick={handlePinClicked}>[pin]</Button>
         ))}
-      {isEditing &&
-        (isPrivate ? (
-          <Button onClick={togglePrivatePublic}>[make public]</Button>
-        ) : (
-          <Button isSelected onClick={togglePrivatePublic}>
-            [make private]
-          </Button>
-        ))}
-      {session && (
-        <Button
-          onClick={toggleEdit}
-          className="cursor-pointer hover:opacity-80"
-        >
-          {isEditing ? "[done]" : "[edit]"}
-        </Button>
-      )}
+      <Button onClick={toggleEdit} className="cursor-pointer hover:opacity-80">
+        {isEditing ? "[done]" : "[edit]"}
+      </Button>
       {isEditing && (
         <Del
           onClick={async () => {

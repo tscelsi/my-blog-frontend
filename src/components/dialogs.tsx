@@ -5,7 +5,7 @@ import { useForm, SubmitHandler, useFieldArray } from "react-hook-form";
 import {
   useAddFileFragmentToMemory,
   useAddRssFragmentToMemory,
-} from "../memory_service";
+} from "../queries/memory_service";
 import { useAuth } from "../hooks/useAuth";
 import { ToolbarLayout } from "./Toolbar/ToolbarLayout";
 import {
