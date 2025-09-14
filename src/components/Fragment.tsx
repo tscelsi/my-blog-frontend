@@ -131,24 +131,39 @@ export const Audio = ({ memory, fragment, isEditing }: FileFragmentProps) => {
 };
 
 export const Image = ({ memory, fragment, isEditing }: FileFragmentProps) => {
+  const [displayUrl, setDisplayUrl] = useState<string | null>(null);
+  const [displayError, setDisplayError] = useState(false);
+  useEffect(() => {
+    supabase.storage
+      .from("memories.develop")
+      .createSignedUrl(`${memory.id}/${fragment.name}`, 60, {
+        transform: {
+          quality: 20,
+        },
+      })
+      .then(({ data, error }) => {
+        if (error) {
+          setDisplayError(true);
+          return;
+        }
+        setDisplayUrl(data?.signedUrl || null);
+      });
+  }, []);
   const {
     data: { publicUrl: fileUrl },
   } = supabase.storage
     .from("memories.develop")
-    .getPublicUrl(`${memory.owner}/${fragment.name}`, {
+    .getPublicUrl(`${memory.id}/${fragment.name}`, {
       download: true,
     });
-  const {
-    data: { publicUrl: displayUrl },
-  } = supabase.storage
-    .from("memories.develop")
-    .getPublicUrl(`${memory.owner}/${fragment.name}`, {
-      transform: {
-        quality: 20,
-      },
-    });
+
   const deleteFragmentMutation = useDeleteFragment();
   const { session } = useAuth();
+
+  if (displayError) {
+    return <p>Error loading image</p>;
+  }
+
   return (
     <div
       className="flex flex-col gap-3 max-w-xl"
@@ -156,7 +171,7 @@ export const Image = ({ memory, fragment, isEditing }: FileFragmentProps) => {
     >
       <img
         className="object-contain rounded-sm"
-        src={displayUrl}
+        src={(displayUrl && displayUrl) || ""}
         alt={fragment.name}
       />
       <div className="flex gap-4">

@@ -141,6 +141,7 @@ export const useMakeMemoryPublic = (memory_id: string, isPublic: boolean) => {
       });
     },
     onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["memory"] });
       queryClient.invalidateQueries({ queryKey: ["memory", memory_id] });
       queryClient.invalidateQueries({ queryKey: ["sharing", memory_id] });
     },
