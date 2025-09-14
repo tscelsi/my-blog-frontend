@@ -1,20 +1,15 @@
-import {
-  createFileRoute,
-  ErrorComponent,
-  ErrorComponentProps,
-  useRouter,
-} from "@tanstack/react-router";
-import { Menubar } from "../../components/Toolbar/Menubar";
-import { Memory } from "../../components/Memory";
-import { getPublicMemoryQueryOptions } from "../../queries/sharing_service";
-import { useIsSmallScreen } from "../../hooks/useIsSmallScreen";
-import { Footer } from "../../components/Footer";
-import { Loader } from "../../components/Loader";
+import { Menubar } from "../components/Toolbar/Menubar";
+import { Memory } from "../components/Memory";
+import { getPublicMemoryQueryOptions } from "../queries/sharing_service";
+import { useIsSmallScreen } from "../hooks/useIsSmallScreen";
+import { Footer } from "../components/Footer";
+import { Loader } from "../components/Loader";
 import {
   useQueryErrorResetBoundary,
   useSuspenseQuery,
 } from "@tanstack/react-query";
 import React from "react";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/public/$memoryId")({
   component: PublicMemoryPage,

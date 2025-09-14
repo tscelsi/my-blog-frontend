@@ -13,7 +13,7 @@
 import { Route as rootRoute } from './routes/__root'
 import { Route as LayoutImport } from './routes/_layout'
 import { Route as LayoutIndexImport } from './routes/_layout.index'
-import { Route as PublicMemoryIdImport } from './routes/public/$memoryId'
+import { Route as PublicMemoryIdImport } from './routes/public.$memoryId'
 import { Route as AuthLoginImport } from './routes/auth/login'
 import { Route as AuthForgotPasswordImport } from './routes/auth/forgot-password'
 import { Route as AuthConfirmImport } from './routes/auth/confirm'
@@ -273,7 +273,7 @@ export const routeTree = rootRoute
       "filePath": "auth/login.tsx"
     },
     "/public/$memoryId": {
-      "filePath": "public/$memoryId.tsx"
+      "filePath": "public.$memoryId.tsx"
     },
     "/_layout/": {
       "filePath": "_layout.index.tsx",
