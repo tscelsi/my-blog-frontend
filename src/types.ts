@@ -23,6 +23,8 @@ export interface FileFragment extends BaseFragment {
   name: string;
   upload_progress: number;
   status: "uploading" | "uploaded" | "error";
+  url: string;
+  url_last_generated: string;
 }
 
 export type Fragment = FileFragment | RichTextFragment | RssFeedFragment;

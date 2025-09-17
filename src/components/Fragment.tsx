@@ -131,38 +131,8 @@ export const Audio = ({ memory, fragment, isEditing }: FileFragmentProps) => {
 };
 
 export const Image = ({ memory, fragment, isEditing }: FileFragmentProps) => {
-  const [displayUrl, setDisplayUrl] = useState<string | null>(null);
-  const [displayError, setDisplayError] = useState(false);
-  useEffect(() => {
-    supabase.storage
-      .from("memories.develop")
-      .createSignedUrl(`${memory.id}/${fragment.name}`, 60, {
-        transform: {
-          quality: 20,
-        },
-      })
-      .then(({ data, error }) => {
-        if (error) {
-          setDisplayError(true);
-          return;
-        }
-        setDisplayUrl(data?.signedUrl || null);
-      });
-  }, []);
-  const {
-    data: { publicUrl: fileUrl },
-  } = supabase.storage
-    .from("memories.develop")
-    .getPublicUrl(`${memory.id}/${fragment.name}`, {
-      download: true,
-    });
-
   const deleteFragmentMutation = useDeleteFragment();
   const { session } = useAuth();
-
-  if (displayError) {
-    return <p>Error loading image</p>;
-  }
 
   return (
     <div
@@ -171,11 +141,11 @@ export const Image = ({ memory, fragment, isEditing }: FileFragmentProps) => {
     >
       <img
         className="object-contain rounded-sm"
-        src={(displayUrl && displayUrl) || ""}
+        src={fragment.url}
         alt={fragment.name}
       />
       <div className="flex gap-4">
-        {!isEditing && <Download url={fileUrl} />}
+        {/* {!isEditing && <Download url={fileUrl} />} */}
         {isEditing && session && (
           <Del
             onClick={async () => {
