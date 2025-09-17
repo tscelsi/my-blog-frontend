@@ -17,7 +17,6 @@ import { useEffect, useRef, useState } from "react";
 import Quill, { Op } from "quill";
 import isEqual from "lodash.isequal";
 import debounce from "lodash.debounce";
-import { supabase } from "../supabaseClient";
 import { RssChannel, useGetRssFeed } from "../queries/rss_service";
 import { Loader } from "./Loader";
 import { Rss20Regular } from "@fluentui/react-icons";
