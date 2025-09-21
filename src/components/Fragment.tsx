@@ -237,36 +237,20 @@ export const RssFeed = ({
   isEditing,
 }: RssFeedFragmentProps) => {
   const deleteFragmentMutation = useDeleteFragment();
-  const { data, isLoading, isError } = useGetRssFeed(memory.id, fragment.id);
-  if (isLoading) {
-    return (
-      <div className="flex justify-start w-fit">
-        <Loader />
-      </div>
-    );
-  }
   let content;
-  if (!isLoading && isError) {
-    content = (
-      <div className="flex justify-start w-fit">
-        <p>Error loading RSS feed</p>
+  content = (
+    <div
+      className="flex border px-2 py-1 rounded-sm border-dark-grey"
+      data-fragment-id={fragment.id}
+    >
+      <div className="flex-1">
+        {fragment.feed?.map((item, index) => (
+          <RssFeedItem item={item} key={`${fragment.id}-item-${index}`} />
+        ))}
       </div>
-    );
-  } else {
-    content = (
-      <div
-        className="flex border px-2 py-1 rounded-sm border-dark-grey"
-        data-fragment-id={fragment.id}
-      >
-        <div className="flex-1">
-          {data?.map((item, index) => (
-            <RssFeedItem item={item} key={`${fragment.id}-item-${index}`} />
-          ))}
-        </div>
-        <Rss20Regular className="opacity-20" />
-      </div>
-    );
-  }
+      <Rss20Regular className="opacity-20" />
+    </div>
+  );
 
   return (
     <div className="flex flex-col gap-3">

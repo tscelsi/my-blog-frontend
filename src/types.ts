@@ -23,9 +23,25 @@ export interface RichTextFragment extends BaseFragment {
   content: Op[];
 }
 
+export interface RssChannel {
+  title: string;
+  link: string;
+  items: RssItem[];
+}
+
+export interface RssItem {
+  title: string;
+  link: string;
+  description: string;
+  pub_date: string;
+  source: string;
+}
+
 export interface RssFeedFragment extends BaseFragment {
   type: "rss_feed";
   urls: string[];
+  feed: RssItem[]
+  feed_last_generated: string;
 }
 
 export interface FileFragment extends BaseFragment {
