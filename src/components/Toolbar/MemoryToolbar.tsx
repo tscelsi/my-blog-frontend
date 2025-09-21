@@ -20,7 +20,7 @@ export const MemoryToolbar = ({
   isEditing: boolean;
 }) => {
   const navigate = useNavigate();
-  const { session } = useAuth();
+  const { session, account } = useAuth();
   const canEdit =
     session?.user.id === memory.owner ||
     memory.editors.some((e) => e === session?.user.id);
@@ -29,18 +29,18 @@ export const MemoryToolbar = ({
     usePinMemory(memory.id);
   const deleteMemoryMutation = useDeleteMemory();
   const isSmallScreen = useIsSmallScreen();
-  // Share drawer state managed internally in ShareMemoryDrawer
 
   const handlePinClicked = () => {
     mutateMemoryPin({
-      pin: !memory.pinned,
+      pin: !account?.memories_pinned.includes(memory.id),
       memory_id: memory.id,
     }).catch((error) => {
       console.error("Error toggling pin:", error);
     });
   };
 
-  const isPinned = pinVariables?.pin ?? memory.pinned;
+  const isPinned =
+    pinVariables?.pin ?? account?.memories_pinned.includes(memory.id);
 
   // Sharing logic moved into ShareMemoryDrawer
   if (isSmallScreen) {

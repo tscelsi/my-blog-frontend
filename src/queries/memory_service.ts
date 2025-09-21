@@ -248,7 +248,8 @@ export const usePinMemory = (memory_id: string) => {
     onError: (_error, _variables, previousMemories) => {
       queryClient.setQueryData<ListMemoryItem[]>(["memory"], previousMemories);
     },
-    onSettled: () => queryClient.invalidateQueries({ queryKey: ["memory"] }),
+    onSettled: () =>
+      queryClient.invalidateQueries({ queryKey: ["auth", "account"] }),
     mutationKey: ["pinMemory", memory_id],
   });
   return mutation;

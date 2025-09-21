@@ -34,7 +34,7 @@ export const MemoryList = ({ memories }: MemoryListProps) => {
 };
 
 const MemoryListItem = ({ memory }: { memory: ListMemoryItem }) => {
-  const { session } = useAuth();
+  const { session, account } = useAuth();
   const isPrivateVariables = useMutationState<SetMemoryPrivacyArgs>({
     filters: {
       mutationKey: ["setMemoryPrivacy", memory.id],
@@ -55,7 +55,8 @@ const MemoryListItem = ({ memory }: { memory: ListMemoryItem }) => {
     isPrivateVariables[isPrivateVariables.length - 1];
   const latestPinnedVariables = isPinnedVariables[isPinnedVariables.length - 1];
   const isPrivate = latestPrivateVariables?.private_ ?? memory.private;
-  const isPinned = latestPinnedVariables?.pin ?? memory.pinned;
+  const isPinned =
+    latestPinnedVariables?.pin ?? account?.memories_pinned.includes(memory.id);
   const titleText = useMemo(() => {
     let titleText;
     if (session) {

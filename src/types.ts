@@ -3,6 +3,16 @@ import { Op } from "quill";
 export type FileType = "file" | "audio" | "image";
 export type MediaType = "rich_text" | FileType | "rss_feed";
 
+export interface Account {
+  id: string;
+  owner: string;
+  created_at: string;
+  created_by: string;
+  updated_at: string;
+  updated_by: string;
+  memories_pinned: string[];
+}
+
 export interface BaseFragment {
   type: MediaType;
   id: string;
