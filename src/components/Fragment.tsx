@@ -48,18 +48,13 @@ export const getFileFragment = (fragment: FileFragment) => {
 };
 
 export const File = ({ fragment, memory, isEditing }: FileFragmentProps) => {
-  const fileUrl = `${
-    import.meta.env.VITE_SUPABASE_URL
-  }/storage/v1/object/public/memories.develop/${memory.owner}/${
-    fragment.name
-  }?download=${fragment.name}`;
   const deleteFragmentMutation = useDeleteFragment();
   const isUploading = fragment.status === "uploading";
   const { session } = useAuth();
   return (
     <div className="flex gap-4" data-fragment-id={fragment.id}>
       <p>{fragment.name}</p>
-      {!isEditing && !isUploading && <Download url={fileUrl} />}
+      {!isEditing && !isUploading && <Download url={`${fragment.url}&download=${fragment.name}`} />}
       {isEditing && !isUploading && session && (
         <Del
           onClick={async () => {
@@ -143,7 +138,7 @@ export const Image = ({ memory, fragment, isEditing }: FileFragmentProps) => {
         alt={fragment.name}
       />
       <div className="flex gap-4">
-        {/* {!isEditing && <Download url={fileUrl} />} */}
+        {!isEditing && <Download url={`${fragment.url}&download=${fragment.name}`} />}
         {isEditing && session && (
           <Del
             onClick={async () => {

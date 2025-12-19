@@ -165,7 +165,7 @@ export const Memory = ({
                 )}
                 contentEditable={isEditing}
                 suppressContentEditableWarning={true}
-                onInput={debounce(handleTitleUpdate, 500)}
+                onInput={debounce(handleTitleUpdate, 1000)}
               >
                 {title}
               </h3>
