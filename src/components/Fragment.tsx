@@ -54,7 +54,9 @@ export const File = ({ fragment, memory, isEditing }: FileFragmentProps) => {
   return (
     <div className="flex gap-4" data-fragment-id={fragment.id}>
       <p>{fragment.name}</p>
-      {!isEditing && !isUploading && <Download url={`${fragment.url}&download=${fragment.name}`} />}
+      {!isEditing && !isUploading && (
+        <Download url={`${fragment.url}&download=${fragment.name}`} />
+      )}
       {isEditing && !isUploading && session && (
         <Del
           onClick={async () => {
@@ -70,20 +72,17 @@ export const File = ({ fragment, memory, isEditing }: FileFragmentProps) => {
 };
 
 export const Audio = ({ memory, fragment, isEditing }: FileFragmentProps) => {
-  const fileUrl = `${
-    import.meta.env.VITE_SUPABASE_URL
-  }/storage/v1/object/public/memories.develop/${memory.owner}/${fragment.name}`;
   const deleteFragmentMutation = useDeleteFragment();
   const { session } = useAuth();
   const isError = fragment.status === "error";
   const { play, pause, isPlaying, currentSrc } = useAudio();
-  const isThisPlaying = isPlaying && currentSrc === fileUrl;
+  const isThisPlaying = isPlaying && currentSrc === fragment.url;
 
   const handlePlayPause = () => {
     if (isThisPlaying) {
       pause();
     } else {
-      play(fileUrl, fragment.name);
+      play(fragment.url, fragment.name);
     }
   };
 
@@ -107,7 +106,7 @@ export const Audio = ({ memory, fragment, isEditing }: FileFragmentProps) => {
       </button>
       <span>{fragment.name}</span>
       {!isEditing && !isError && (
-        <Download url={`${fileUrl}?download=${fragment.name}`} />
+        <Download url={`${fragment.url}&download=${fragment.name}`} />
       )}
       {isEditing && session && (
         <Del
@@ -138,7 +137,9 @@ export const Image = ({ memory, fragment, isEditing }: FileFragmentProps) => {
         alt={fragment.name}
       />
       <div className="flex gap-4">
-        {!isEditing && <Download url={`${fragment.url}&download=${fragment.name}`} />}
+        {!isEditing && (
+          <Download url={`${fragment.url}&download=${fragment.name}`} />
+        )}
         {isEditing && session && (
           <Del
             onClick={async () => {
